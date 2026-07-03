@@ -7,8 +7,7 @@ on:
 
 permissions:
   id-token: write
-  contents: write
-  pages: write
+  contents: read
 
 jobs:
   generate-report:
@@ -45,25 +44,6 @@ jobs:
         run: |
           ./scripts/New-AzComprehensiveAdminReport.ps1
 
-      - name: Prepare report outputs for repo and Pages
-        shell: pwsh
-        run: |
-          $runDate = Get-Date -Format 'yyyy-MM-dd'
-          $historyDir = Join-Path 'reports/history' $runDate
-          $latestDir = 'reports/latest'
-          $pagesDir = '_site'
-
-          New-Item -ItemType Directory -Path $historyDir -Force | Out-Null
-          New-Item -ItemType Directory -Path $latestDir -Force | Out-Null
-          New-Item -ItemType Directory -Path $pagesDir -Force | Out-Null
-
-          Copy-Item -Path output/* -Destination $historyDir -Recurse -Force
-          Copy-Item -Path output/* -Destination $latestDir -Recurse -Force
-          Copy-Item -Path output/* -Destination $pagesDir -Recurse -Force
-
-          Copy-Item -Path output/comprehensive-report.html -Destination (Join-Path $latestDir 'index.html') -Force
-          Copy-Item -Path output/comprehensive-report.html -Destination (Join-Path $pagesDir 'index.html') -Force
-
       - name: Upload generated report artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -71,35 +51,3 @@ jobs:
           path: output/
           if-no-files-found: error
           retention-days: 30
-
-      - name: Commit report snapshot to repository
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f reports/
-          if git diff --cached --quiet; then
-            echo "No report changes to commit"
-            exit 0
-          fi
-          git commit -m "Publish Azure inventory report [skip ci]"
-          git push
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site/
-
-  deploy-pages:
-    needs: generate-report
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
