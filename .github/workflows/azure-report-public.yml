@@ -1,0 +1,53 @@
+name: Azure Inventory Report - Public OIDC
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 1'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install Az PowerShell modules
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
+          Install-Module -Name Az.Advisor -Scope CurrentUser -Repository PSGallery -Force
+
+      - name: Generate Azure inventory datasets
+        shell: pwsh
+        run: |
+          ./scripts/Export-AzResources.ps1
+          ./scripts/Export-AzRoleAssignments.ps1
+          ./scripts/Export-AzNsgRules.ps1
+          ./scripts/Export-AzDefenderRecommendations.ps1
+          ./scripts/Export-AzAdvisorRecommendations.ps1
+
+      - name: Build comprehensive HTML report
+        shell: pwsh
+        run: |
+          ./scripts/New-AzComprehensiveAdminReport.ps1
+
+      - name: Upload generated report artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: azure-inventory-report
+          path: output/
+          if-no-files-found: error
+          retention-days: 30
