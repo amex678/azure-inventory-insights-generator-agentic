@@ -3,9 +3,9 @@ name: Azure Inventory Report - Public OIDC
 on:
   workflow_dispatch:
   schedule:
-    # Temporary verification schedule for 2026-07-06 11:30 JST (02:30 UTC).
-    # Remove after verification to avoid yearly execution on Jul 6.
-    - cron: '30 2 6 7 *'
+    # Temporary verification schedule (every 5 minutes, UTC).
+    # Remove after one schedule run is confirmed.
+    - cron: '*/5 * * * *'
     - cron: '0 2 * * 1'
 
 permissions:
