@@ -96,6 +96,26 @@ VS Code + GitHub Copilot Chat 環境では、以下の prompt を使って一連
 /azure-comprehensive-report
 ```
 
+## GitHub Actions だけで AI HTML レポートを生成する
+
+このリポジトリでは、PR を経由せず GitHub Actions 実行だけで Copilot を使った HTML レポート生成ができます。
+
+- ワークフロー: `.github/workflows/azure-report-public.yml`
+- 実行スクリプト: `scripts/New-AzComprehensiveAdminReportWithCopilot.ps1`
+- 生成物:
+	- `output/comprehensive-report.html`
+	- `reports/latest/comprehensive-report.html`
+	- `reports/history/{yyyy-MM-dd}/comprehensive-report.html`
+
+実行順は以下です。
+
+1. Azure の各種データを収集（resources/rbac/nsg/defender/advisor）
+2. GitHub Copilot (GitHub Models) を使って総合 HTML を直接生成
+
+> 補足:
+> - `GITHUB_TOKEN` を使って Actions から呼び出します。
+> - モデル応答取得に失敗した場合は、既存のルールベース HTML 生成にフォールバックしてジョブを継続します。
+
 ## セキュリティと取り扱い上の注意
 
 - 生成物にはサブスクリプション ID、リソース ID、プリンシパル名、IP アドレス、NSG ルール、セキュリティ評価結果が含まれます。社外共有前に必ず確認してください。

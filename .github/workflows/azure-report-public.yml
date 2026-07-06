@@ -46,10 +46,12 @@ jobs:
           ./scripts/Export-AzDefenderRecommendations.ps1
           ./scripts/Export-AzAdvisorRecommendations.ps1
 
-      - name: Build comprehensive HTML report
+      - name: Build comprehensive HTML report with Copilot
         shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          ./scripts/New-AzComprehensiveAdminReport.ps1
+          ./scripts/New-AzComprehensiveAdminReportWithCopilot.ps1
 
       - name: Upload generated report artifacts
         uses: actions/upload-artifact@v4
