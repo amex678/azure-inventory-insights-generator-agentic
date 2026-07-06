@@ -3,10 +3,12 @@ name: Azure Inventory Report - Public OIDC
 on:
   workflow_dispatch:
   schedule:
-    # Temporary verification schedule (every 5 minutes, UTC).
+    # Temporary verification schedule (every 30 min at :17 and :47, UTC).
+    # Fixed minutes avoid the top-of-hour peak to improve trigger reliability.
     # Remove after one schedule run is confirmed.
-    - cron: '*/5 * * * *'
-    - cron: '0 2 * * 1'
+    - cron: '17,47 * * * *'
+    # Weekly production run: Monday 02:07 UTC (offset from :00 to dodge the peak).
+    - cron: '7 2 * * 1'
 
 permissions:
   id-token: write
