@@ -1,0 +1,19 @@
+{
+  "runId": "28990808875",
+  "repository": "amex678/azure-inventory-insights-generator-ai",
+  "generatedAt": "2026-07-09T03:01:47.0529026+00:00",
+  "model": "openai/gpt-4.1-mini",
+  "metrics": {
+    "resourcesTotal": 51,
+    "resourceGroups": 7,
+    "regions": 5,
+    "ownerAssignments": 13,
+    "uaaAssignments": 2,
+    "orphanAssignments": 40,
+    "nsgRisky": 0,
+    "defenderUnhealthy": 79,
+    "defenderHigh": 31,
+    "advisorHigh": 25,
+    "tagCoverage": 45.1
+  }
+}

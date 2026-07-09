@@ -544,5 +544,19 @@
     "Condition": null,
     "Description": null,
     "RoleAssignmentId": "/providers/Microsoft.Management/managementGroups/a302d41f-c5ea-4f3a-9448-d2561d765ae9/providers/Microsoft.Authorization/roleAssignments/e25b4316-744f-5007-8c41-8984e9955bb0"
+  },
+  {
+    "DisplayName": null,
+    "SignInName": null,
+    "ObjectId": "a6505c31-53bd-435a-9503-8cec7b0490f9",
+    "ObjectType": "ServicePrincipal",
+    "RoleDefinitionName": "Owner",
+    "RoleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+    "Scope": "/providers/Microsoft.Management/managementGroups/a302d41f-c5ea-4f3a-9448-d2561d765ae9",
+    "ScopeKind": "ManagementGroup",
+    "ConditionVersion": null,
+    "Condition": null,
+    "Description": null,
+    "RoleAssignmentId": "/providers/Microsoft.Management/managementGroups/a302d41f-c5ea-4f3a-9448-d2561d765ae9/providers/Microsoft.Authorization/roleAssignments/2be26dab-9421-572a-8592-19059f063079"
   }
 ]
