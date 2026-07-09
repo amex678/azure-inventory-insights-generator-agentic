@@ -5,74 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Azure 総合運用監査レポート</title>
 <style>
-  body { font-family: "Yu Gothic", "Meiryo", sans-serif; margin: 0; padding: 0; background: #f9f9f9; color: #333; }
+  body { font-family: "Yu Gothic", "Meiryo", sans-serif; background: #f9f9f9; margin: 0; padding: 0; color: #333; }
   header, footer { background: #004578; color: white; padding: 1em 2em; }
   header h1 { margin: 0; font-weight: 700; font-size: 1.8em; }
-  main { padding: 2em; max-width: 1200px; margin: auto; background: white; box-shadow: 0 0 10px #ccc; }
-  h2 { border-bottom: 3px solid #004578; padding-bottom: 0.3em; margin-top: 2em; }
+  main { max-width: 1100px; margin: 1em auto 3em; background: white; padding: 2em; box-shadow: 0 0 10px #ccc; border-radius: 6px; }
+  h2 { border-bottom: 2px solid #004578; padding-bottom: 0.3em; margin-top: 2em; }
   table { border-collapse: collapse; width: 100%; margin-top: 1em; }
-  th, td { border: 1px solid #ccc; padding: 0.5em 0.7em; text-align: left; }
-  th { background: #e6f0fa; }
-  .badge { display: inline-block; padding: 0.2em 0.6em; border-radius: 0.4em; font-size: 0.85em; font-weight: 700; color: white; vertical-align: middle; }
+  th, td { border: 1px solid #ccc; padding: 0.5em 0.7em; text-align: left; vertical-align: top; }
+  th { background: #e1eaff; }
+  .badge { display: inline-block; padding: 0.2em 0.6em; border-radius: 12px; font-size: 0.85em; font-weight: 600; color: white; }
   .badge-High { background-color: #d93025; }
   .badge-Medium { background-color: #f9ab00; }
   .badge-Low { background-color: #188038; }
-  .domain-badge { background: #0078d4; color: white; font-weight: 700; padding: 0.15em 0.5em; border-radius: 0.3em; font-size: 0.9em; margin-right: 0.5em; }
-  .risk-card { border: 1px solid #ccc; border-left-width: 6px; padding: 1em; margin: 1em 0; background: #fff; }
+  .domain-badge { font-size: 0.9em; font-weight: 700; color: white; border-radius: 4px; padding: 0.15em 0.5em; margin-right: 0.5em; }
+  .domain-Resources { background-color: #0078d4; }
+  .domain-RBAC { background-color: #004b8d; }
+  .domain-NSG { background-color: #0a6ed1; }
+  .domain-Defender { background-color: #107c10; }
+  .domain-Advisor { background-color: #ff8c00; }
+  .risk-card { border: 1px solid #ccc; border-left-width: 6px; margin-bottom: 1em; padding: 1em; background: #fefefe; border-radius: 4px; }
   .risk-card.High { border-left-color: #d93025; }
   .risk-card.Medium { border-left-color: #f9ab00; }
   .risk-card.Low { border-left-color: #188038; }
-  .risk-title { font-weight: 700; font-size: 1.2em; margin-bottom: 0.3em; }
-  .risk-desc { margin-bottom: 0.5em; }
-  .links a { color: #0067c5; text-decoration: none; margin-right: 1em; }
-  .links a:hover { text-decoration: underline; }
-  ul.action-list { list-style: disc inside; margin-left: 1em; }
-  section.appendix table th, section.appendix table td { font-size: 0.85em; }
-  a.resource-link { color: #004578; text-decoration: none; }
-  a.resource-link:hover { text-decoration: underline; }
+  .risk-card h3 { margin-top: 0; }
+  .action-plan { margin-top: 1em; }
+  .action-plan ul { list-style-type: disc; padding-left: 1.5em; }
+  a { color: #0066cc; text-decoration: none; }
+  a:hover, a:focus { text-decoration: underline; }
+  .footer-text { font-size: 0.9em; text-align: center; color: #666; margin-top: 3em; }
+  .appendix-table th, .appendix-table td { font-size: 0.85em; }
+  .nowrap { white-space: nowrap; }
 </style>
 </head>
 <body>
 <header>
   <h1>Azure 総合運用監査レポート</h1>
-  <div>生成日時: 2026-07-09 18:33:38 UTC</div>
+  <p>生成日時: 2026-07-09 20:32:01 UTC</p>
 </header>
 <main>
   <section id="executive-summary">
     <h2>エグゼクティブサマリ</h2>
-    <p>本レポートは、現在ログイン中の Azure サブスクリプションにおけるリソース、RBAC、NSG、Defender for Cloud、Azure Advisor の横断的な棚卸しとリスク分析を実施した結果をまとめています。</p>
-    <h3>主要数値</h3>
+    <p>本レポートは、現在ログイン中の Azure サブスクリプションにおけるリソース、RBAC、NSG、Defender for Cloud、Azure Advisor の横断的な棚卸しとリスク分析を実施した結果をまとめたものです。</p>
+    <h3>主要数値サマリ</h3>
     <ul>
-      <li>リソース総数: <strong>75</strong> 件</li>
-      <li>リソースグループ数: <strong>9</strong></li>
-      <li>リージョン数: <strong>5</strong></li>
-      <li>VM 件数: <strong>未取得</strong>（データなし）</li>
-      <li>Storage (LRS) 件数: <strong>未取得</strong>（データなし）</li>
-      <li>Public IP 件数: <strong>未取得</strong>（データなし）</li>
+      <li>リソース総数: <strong>75</strong> 件 / リソースグループ数: <strong>9</strong> / リージョン数: <strong>5</strong></li>
+      <li>VM件数: <strong>データなし</strong> / Storage (LRS) 件数: <strong>データなし</strong> / Public IP 件数: <strong>データなし</strong></li>
       <li>タグ付与率: <strong>52.0%</strong></li>
-      <li>RBAC 総割り当て数: <strong>未取得</strong>（データなし）</li>
-      <li>Owner 割り当て数: <strong>13</strong></li>
-      <li>UAA (User Assigned Assigned) 割り当て数: <strong>2</strong></li>
-      <li>サービスプリンシパル割り当て数: <strong>未取得</strong>（データなし）</li>
-      <li>孤児候補割り当て数: <strong>40</strong></li>
-      <li>管理グループスコープの Owner 数: <strong>未取得</strong>（データなし）</li>
-      <li>NSG 数: <strong>未取得</strong>（データなし）</li>
-      <li>NSG 総ルール数: <strong>未取得</strong>（データなし）</li>
-      <li>高リスク NSG ルール件数: <strong>0</strong></li>
-      <li>Defender for Cloud Unhealthy 件数: <strong>155</strong>（High: 39, Medium: 未集計, Low: 未集計）</li>
-      <li>Defender for Cloud 最頻出推奨事項: <em>Update libncurses6, Update ncurses-term, Update libncursesw6 など</em></li>
-      <li>Azure Advisor 件数: <strong>未取得</strong>（データなし）</li>
-      <li>Advisor High Impact 件数: <strong>29</strong></li>
-      <li>Advisor 最頻出問題: <em>Enable zone redundancy for storage accounts to improve high availability and resiliency</em></li>
-      <li>Defender for Cloud データ取得状況: <strong>正常取得</strong></li>
-      <li>Azure Advisor データ取得状況: <strong>正常取得</strong></li>
+      <li>RBAC 総割り当て: <strong>データなし</strong> / Owner 割り当て: <strong>13</strong> / UAA (User Assigned Assigned) 割り当て: <strong>2</strong> / 孤児候補件数: <strong>40</strong> / Management Group スコープの Owner: <strong>データなし</strong></li>
+      <li>NSG 数: <strong>データなし</strong> / 総ルール数: <strong>データなし</strong> / 高リスクルール件数: <strong>0</strong></li>
+      <li>Defender for Cloud Unhealthy 件数: <strong>178</strong>（High: <strong>53</strong> / Medium: <strong>未集計だが多数</strong> / Low: <strong>未集計だが少数</strong>）</li>
+      <li>Defender 最頻出推奨事項: <em>Update linux-image-generic_for_linux 等パッチ適用関連</em></li>
+      <li>Azure Advisor 件数: <strong>30</strong>（High Impact 件数: <strong>30</strong>）</li>
+      <li>Advisor 最頻出問題: <em>Linux 仮想マシンの Azure Disk Encryption または EncryptionAtHost の有効化推奨</em></li>
+      <li>Defender for Cloud は有効化済み、Azure Advisor は導入済みのためデータ取得は正常に行われています。</li>
     </ul>
     <h3>主要改善領域</h3>
     <ol>
-      <li><strong>公開境界</strong> - 公開 IP と高リスク NSG ルールの管理強化</li>
-      <li><strong>特権境界</strong> - Owner、UAA、孤児アカウントの適正管理</li>
-      <li><strong>監視フィードバック</strong> - Defender for Cloud と Advisor の推奨事項の継続的レビュー</li>
-      <li><strong>ガバナンス基盤</strong> - タグ付与率向上とストレージ冗長性の最適化</li>
+      <li><strong>公開境界の強化</strong> - Public IP と NSG 高リスクルールの監視と制御</li>
+      <li><strong>特権境界の管理</strong> - Owner、UAA、孤児アカウントの整理と PIM 適用</li>
+      <li><strong>監視フィードバックの活用</strong> - Defender と Advisor の推奨事項を活かした運用改善</li>
+      <li><strong>ガバナンス基盤の強化</strong> - タグ付与率向上とストレージ冗長性の最適化</li>
     </ol>
   </section>
 
@@ -84,58 +76,39 @@
           <th>ドメイン</th>
           <th>主要指標</th>
           <th>値</th>
+          <th>備考</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><span class="domain-badge">リソース</span></td>
-          <td>総リソース数</td>
-          <td>75</td>
+          <td><span class="domain-badge domain-Resources">リソース</span></td>
+          <td>総リソース数 / RG数 / リージョン数</td>
+          <td>75 / 9 / 5</td>
+          <td>VM・Storage・Public IPはデータなし</td>
         </tr>
         <tr>
-          <td><span class="domain-badge">リソース</span></td>
-          <td>リソースグループ数</td>
-          <td>9</td>
+          <td><span class="domain-badge domain-RBAC">RBAC</span></td>
+          <td>Owner / UAA / 孤児候補</td>
+          <td>13 / 2 / 40</td>
+          <td>総割り当て数・MGスコープOwnerは未取得</td>
         </tr>
         <tr>
-          <td><span class="domain-badge">リソース</span></td>
-          <td>リージョン数</td>
-          <td>5</td>
-        </tr>
-        <tr>
-          <td><span class="domain-badge">RBAC</span></td>
-          <td>Owner 割り当て数</td>
-          <td>13</td>
-        </tr>
-        <tr>
-          <td><span class="domain-badge">RBAC</span></td>
-          <td>UAA 割り当て数</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td><span class="domain-badge">RBAC</span></td>
-          <td>孤児候補割り当て数</td>
-          <td>40</td>
-        </tr>
-        <tr>
-          <td><span class="domain-badge">NSG</span></td>
+          <td><span class="domain-badge domain-NSG">NSG</span></td>
           <td>高リスクルール件数</td>
           <td>0</td>
+          <td>NSG数・総ルール数は未取得</td>
         </tr>
         <tr>
-          <td><span class="domain-badge">Defender</span></td>
-          <td>Unhealthy 件数 (High)</td>
-          <td>39</td>
+          <td><span class="domain-badge domain-Defender">Defender for Cloud</span></td>
+          <td>Unhealthy 件数 (High / Medium / Low)</td>
+          <td>178 (53 / 未集計 / 未集計)</td>
+          <td>推奨事項はパッチ適用関連が多い</td>
         </tr>
         <tr>
-          <td><span class="domain-badge">Defender</span></td>
-          <td>Unhealthy 件数 (合計)</td>
-          <td>155</td>
-        </tr>
-        <tr>
-          <td><span class="domain-badge">Advisor</span></td>
-          <td>High Impact 件数</td>
-          <td>29</td>
+          <td><span class="domain-badge domain-Advisor">Azure Advisor</span></td>
+          <td>総件数 / High Impact 件数</td>
+          <td>30 / 30</td>
+          <td>主に Linux VM の暗号化推奨</td>
         </tr>
       </tbody>
     </table>
@@ -145,59 +118,55 @@
     <h2>潜在リスク Top 5</h2>
 
     <article class="risk-card Low">
-      <div class="risk-title">1. 公開境界の露出 <span class="badge Low">Low</span></div>
-      <div class="risk-desc">
-        本サブスクリプションでは高リスク NSG ルールは <strong>0 件</strong>、Public IP 件数は未取得ですが、公開境界の管理は常に重要です。推奨される対策は Bastion と JIT (Just-In-Time) アクセスの導入、Application Gateway の WAF 利用です。
-      </div>
-      <div class="links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/bastion/bastion-overview" target="_blank" rel="noopener">Azure Bastion</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/just-in-time-access" target="_blank" rel="noopener">JIT VM Access</a>
+      <h3>1. 公開境界の露出 <span class="badge Low">Low</span></h3>
+      <p>本サブスクリプションでは NSG の高リスクルールは <strong>0件</strong>、Public IP 件数は未取得のため詳細不明ですが、公開境界の露出は現状低リスクと評価されます。<br />
+      <strong>推奨:</strong> Bastion と JIT (Just-In-Time) アクセスの導入、Application Gateway WAF の活用を検討してください。</p>
+      <p>参考リンク:
+        <a href="https://learn.microsoft.com/ja-jp/azure/bastion/bastion-overview" target="_blank" rel="noopener">Azure Bastion</a> /
+        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/just-in-time-access" target="_blank" rel="noopener">JIT VM Access</a> /
         <a href="https://learn.microsoft.com/ja-jp/azure/application-gateway/waf-overview" target="_blank" rel="noopener">Application Gateway WAF</a>
-      </div>
+      </p>
     </article>
 
     <article class="risk-card Medium">
-      <div class="risk-title">2. 特権ロールの恒久付与と blast radius <span class="badge Medium">Medium</span></div>
-      <div class="risk-desc">
-        Owner 割り当て数は <strong>13 件</strong>、UAA 割り当て数は <strong>2 件</strong>、孤児候補は <strong>40 件</strong>と多く、特権ロールの恒久付与によるリスクが懸念されます。推奨は PIM (Privileged Identity Management)、マネージド ID の活用、Access Review の定期実施です。
-      </div>
-      <div class="links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/active-directory/privileged-identity-management-pim" target="_blank" rel="noopener">Azure AD PIM</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/active-directory/managed-identities-azure-resources/overview" target="_blank" rel="noopener">マネージド ID</a>
+      <h3>2. 特権ロールの恒久付与と blast radius <span class="badge Medium">Medium</span></h3>
+      <p>Owner 割り当てが <strong>13件</strong>、UAA 割り当てが <strong>2件</strong>、孤児候補が <strong>40件</strong>存在し、特権ロールの恒久付与によるリスクが懸念されます。<br />
+      <strong>推奨:</strong> PIM (Privileged Identity Management) の適用、マネージド ID の活用、定期的な Access Review を実施してください。</p>
+      <p>参考リンク:
+        <a href="https://learn.microsoft.com/ja-jp/azure/active-directory/privileged-identity-management-pim" target="_blank" rel="noopener">Azure AD PIM</a> /
+        <a href="https://learn.microsoft.com/ja-jp/azure/active-directory/managed-identities-azure-resources/overview" target="_blank" rel="noopener">マネージド ID</a> /
         <a href="https://learn.microsoft.com/ja-jp/azure/active-directory/governance/access-reviews-overview" target="_blank" rel="noopener">Access Reviews</a>
-      </div>
+      </p>
     </article>
 
     <article class="risk-card High">
-      <div class="risk-title">3. Defender for Cloud のセキュリティ態勢ギャップ <span class="badge High">High</span></div>
-      <div class="risk-desc">
-        Defender for Cloud の Unhealthy 件数は <strong>155 件</strong>、うち High Severity は <strong>39 件</strong>にのぼります。セキュリティ態勢に明確なギャップが存在し、Foundational CSPM の導入と Secure Score の月次レビューを強く推奨します。
-      </div>
-      <div class="links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/security-center-intro" target="_blank" rel="noopener">Defender for Cloud 入門</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/secure-score" target="_blank" rel="noopener">Secure Score</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/security-center-cspm" target="_blank" rel="noopener">CSPM (Cloud Security Posture Management)</a>
-      </div>
+      <h3>3. Defender for Cloud のセキュリティ態勢ギャップ <span class="badge High">High</span></h3>
+      <p>Defender for Cloud の Unhealthy 件数は <strong>178件</strong>、うち High Severity が <strong>53件</strong>存在し、セキュリティ態勢に重大なギャップがあります。<br />
+      <strong>推奨:</strong> Foundational CSPM (Cloud Security Posture Management) の導入、Secure Score の月次レビューを必須化してください。</p>
+      <p>参考リンク:
+        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/security-center-intro" target="_blank" rel="noopener">Defender for Cloud 概要</a> /
+        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/secure-score" target="_blank" rel="noopener">Secure Score</a> /
+        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/security-center-cspm" target="_blank" rel="noopener">CSPM のベストプラクティス</a>
+      </p>
     </article>
 
     <article class="risk-card High">
-      <div class="risk-title">4. Advisor フィードバックループ不在 <span class="badge High">High</span></div>
-      <div class="risk-desc">
-        Advisor の High Impact 件数は <strong>29 件</strong>あり、重要な運用改善提案が多数存在します。月次レビューの実施と Cost Management 連動による継続的改善を推奨します。
-      </div>
-      <div class="links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/advisor/advisor-overview" target="_blank" rel="noopener">Azure Advisor 概要</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/cost-management-billing/costs/tutorial-acm-cost-analysis" target="_blank" rel="noopener">Cost Management 連携</a>
-      </div>
+      <h3>4. Advisor フィードバックループ不在 <span class="badge High">High</span></h3>
+      <p>Azure Advisor の High Impact 推奨が <strong>30件</strong>存在し、フィードバックループが不十分な可能性があります。<br />
+      <strong>推奨:</strong> Advisor 推奨事項の月次レビューを実施し、Cost Management と連動した改善活動を推進してください。</p>
+      <p>参考リンク:
+        <a href="https://learn.microsoft.com/ja-jp/azure/advisor/advisor-overview" target="_blank" rel="noopener">Azure Advisor 概要</a> /
+        <a href="https://learn.microsoft.com/ja-jp/azure/cost-management-billing/costs/tutorial-acm" target="_blank" rel="noopener">Cost Management 連携</a> /
+        <a href="https://learn.microsoft.com/ja-jp/azure/advisor/advisor-best-practices" target="_blank" rel="noopener">Advisor ベストプラクティス</a>
+      </p>
     </article>
 
     <article class="risk-card Medium">
-      <div class="risk-title">5. ガバナンス基盤の弱さ <span class="badge Medium">Medium</span></div>
-      <div class="risk-desc">
-        タグ付与率は <strong>52.0%</strong> と半数程度であり、ストレージ冗長性や Public IP 管理も未最適の可能性があります。Azure Policy によるタグ必須化、Tag Inheritance の活用、ZRS/GZRS への冗長性移行を推奨します。
-      </div>
-      <div class="links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/governance/policy/overview" target="_blank" rel="noopener">Azure Policy</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/management/tag-resources" target="_blank" rel="noopener">タグ付与のベストプラクティス</a>
-        <a href
+      <h3>5. ガバナンス基盤の弱さ <span class="badge Medium">Medium</span></h3>
+      <p>タグ付与率は <strong>52.0%</strong> と半数程度に留まり、ストレージの冗長性や Public IP 管理も不十分な可能性があります。<br />
+      <strong>推奨:</strong> Azure Policy によるタグ必須化、Tag Inheritance の導入、LRS から ZRS/GZRS への冗長性移行を推進してください。</p>
+      <p>参考リンク:
+        <a href="https://learn.microsoft.com/ja-jp/azure/governance/policy/overview" target="_blank" rel="noopener">Azure Policy</a> /
+        <a href="https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/management/tag-resources" target="_blank" rel="noopener">タグ管理</a> /
+        <a href="https://learn.microsoft.com/ja-jp/azure/storage/common/storage-redundancy
 <section><h2>30日アクションプラン</h2><ol><li>Week 1: 優先リスクの棚卸しと担当割り当て</li><li>Week 2: 高優先度項目の対処開始</li><li>Week 3: 対処結果の検証と未対応項目の再計画</li><li>Week 4: 定例レビューと次月計画の確定</li></ol></section>
