@@ -84,7 +84,9 @@ cd scripts
 │   ├── Export-AzNsgRules.ps1
 │   ├── Export-AzDefenderRecommendations.ps1
 │   ├── Export-AzAdvisorRecommendations.ps1
-│   └── New-AzComprehensiveAdminReport.ps1
+│   ├── New-AzComprehensiveAdminReport.ps1
+│   ├── New-AzComprehensiveAdminReportWithAgent.ps1
+│   └── Test-AzComprehensiveAdminReport.ps1
 └── output/
 ```
 
@@ -96,26 +98,44 @@ VS Code + GitHub Copilot Chat 環境では、以下の prompt を使って一連
 /azure-comprehensive-report
 ```
 
-## GitHub Actions だけで AI HTML レポートを生成する
+## GitHub Actions で Agentic Workflow 実行
 
-このリポジトリでは、PR を経由せず GitHub Actions 実行だけで Copilot を使った HTML レポート生成ができます。
+このリポジトリでは、PR を経由せず GitHub Actions 実行だけで Agentic Workflow による AI HTML レポート生成ができます。
 
 - ワークフロー: `.github/workflows/azure-report-public.yml`
-- 実行スクリプト: `scripts/New-AzComprehensiveAdminReportWithCopilot.ps1`
+- AI 生成スクリプト: `scripts/New-AzComprehensiveAdminReportWithAgent.ps1`
+- 検証スクリプト: `scripts/Test-AzComprehensiveAdminReport.ps1`
 - 生成物:
 	- `output/comprehensive-report.html`
+	- `output/report-evidence.json`
 	- `reports/latest/comprehensive-report.html`
 	- `reports/history/{yyyy-MM-dd}/comprehensive-report.html`
 
-実行順は以下です。
+ジョブ構成は以下です。
 
-1. Azure の各種データを収集（resources/rbac/nsg/defender/advisor）
-2. GitHub Copilot (GitHub Models) を使って総合 HTML を直接生成
+1. `collect-data`: Azure の各種データを収集（resources/rbac/nsg/defender/advisor）
+2. `agent-generate-report`: prompt + compact JSON から AI で HTML を生成
+3. `validate-report`: 必須セクション・危険タグ・主要数値の整合性を検証
+4. `publish-report`: `reports/latest` / `reports/history` / Pages 用 `_site` を更新
+
+必要な設定:
+
+- Secret:
+	- `AI_REPORT_API_KEY`
+- Variable（任意）:
+	- `AI_REPORT_API_ENDPOINT`
+	- `AI_REPORT_MODEL`
+	- `ENABLE_GITHUB_PAGES`（`true` のときのみ Pages デプロイ）
+
+`workflow_dispatch` の `report_mode` で生成モードを選択できます。
+
+- `auto`（既定）: AI を試行し、失敗または Secret 未設定時は rule-based にフォールバック
+- `ai-only`: AI 生成のみ実行。失敗時はジョブ失敗
+- `rule-based`: AI を使わず `New-AzComprehensiveAdminReport.ps1` のみ実行
 
 > 補足:
-> - `GITHUB_TOKEN` を使って Actions から呼び出します。
-> - モデル応答取得に失敗した場合は、既存のルールベース HTML 生成にフォールバックしてジョブを継続します。
-> - GitHub Pages デプロイは、リポジトリ Variable `ENABLE_GITHUB_PAGES=true` を設定した場合のみ実行されます（未設定時はスキップ）。
+> - AI 生成が失敗した場合は、既存のルールベース HTML 生成 (`New-AzComprehensiveAdminReport.ps1`) にフォールバックして処理を継続します。
+> - `azure-comprehensive-report.prompt.md` を seed として利用し、Agent 側で事実拘束ルールを適用します。
 
 ## セキュリティと取り扱い上の注意
 

@@ -2,6 +2,16 @@ name: Azure Inventory Report - Public OIDC
 
 on:
   workflow_dispatch:
+    inputs:
+      report_mode:
+        description: "Report generation mode"
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - ai-only
+          - rule-based
   schedule:
     # Temporary verification schedule (every 30 min at :17 and :47, UTC).
     # Fixed minutes avoid the top-of-hour peak to improve trigger reliability.
@@ -16,7 +26,7 @@ permissions:
   pages: write
 
 jobs:
-  generate-report:
+  collect-data:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -46,12 +56,48 @@ jobs:
           ./scripts/Export-AzDefenderRecommendations.ps1
           ./scripts/Export-AzAdvisorRecommendations.ps1
 
-      - name: Build comprehensive HTML report with Copilot
+      - name: Upload collected datasets
+        uses: actions/upload-artifact@v4
+        with:
+          name: azure-inventory-datasets
+          path: output/
+          if-no-files-found: error
+          retention-days: 30
+
+  agent-generate-report:
+    needs: collect-data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download collected datasets
+        uses: actions/download-artifact@v4
+        with:
+          name: azure-inventory-datasets
+          path: output/
+
+      - name: Build comprehensive HTML report with Agent
         shell: pwsh
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          AI_REPORT_API_KEY: ${{ secrets.AI_REPORT_API_KEY }}
+          AI_REPORT_API_ENDPOINT: ${{ vars.AI_REPORT_API_ENDPOINT }}
+          AI_REPORT_MODEL: ${{ vars.AI_REPORT_MODEL }}
+          REPORT_MODE: ${{ github.event.inputs.report_mode || 'auto' }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          ./scripts/New-AzComprehensiveAdminReportWithCopilot.ps1
+          if ($env:REPORT_MODE -eq 'rule-based') {
+            ./scripts/New-AzComprehensiveAdminReport.ps1
+            exit 0
+          }
+
+          if ($env:REPORT_MODE -eq 'ai-only') {
+            ./scripts/New-AzComprehensiveAdminReportWithAgent.ps1 -FailOnError
+            exit 0
+          }
+
+          ./scripts/New-AzComprehensiveAdminReportWithAgent.ps1
 
       - name: Upload generated report artifacts
         uses: actions/upload-artifact@v4
@@ -60,6 +106,45 @@ jobs:
           path: output/
           if-no-files-found: error
           retention-days: 30
+
+  validate-report:
+    needs: agent-generate-report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download generated report artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: azure-inventory-report
+          path: output/
+
+      - name: Validate generated report
+        shell: pwsh
+        run: |
+          ./scripts/Test-AzComprehensiveAdminReport.ps1
+
+      - name: Upload validated report artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: azure-inventory-report-validated
+          path: output/
+          if-no-files-found: error
+          retention-days: 30
+
+  publish-report:
+    needs: validate-report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download validated report artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: azure-inventory-report-validated
+          path: output/
 
       - name: Prepare report outputs for repository and Pages
         shell: pwsh
@@ -101,7 +186,7 @@ jobs:
 
   deploy-pages:
     if: ${{ vars.ENABLE_GITHUB_PAGES == 'true' }}
-    needs: generate-report
+    needs: publish-report
     runs-on: ubuntu-latest
     permissions:
       pages: write
