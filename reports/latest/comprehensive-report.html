@@ -6,12 +6,8 @@
 <title>Azure 総合運用監査レポート</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Yu+Gothic&family=Segoe+UI&display=swap');
-  body {
-    margin: 0; padding: 0;
-    font-family: "Yu Gothic", "Segoe UI", sans-serif;
-    line-height: 1.7;
-    background: #f5f7fa;
-    color: #222;
+  html, body {
+    margin:0; padding:0; background:#f5f7fa; font-family:"Yu Gothic","Segoe UI",sans-serif; line-height:1.7; color:#222;
   }
   header {
     background: linear-gradient(90deg, #0078d4 0%, #50e6ff 100%);
@@ -19,7 +15,6 @@
     padding: 28px 32px;
     font-size: 1.6rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
   }
   main {
     max-width: 1200px;
@@ -31,14 +26,14 @@
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
     padding: 24px 32px;
-    margin-bottom: 32px;
   }
   h2 {
     border-left: 6px solid #0078d4;
     padding-left: 12px;
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     font-weight: 700;
     font-size: 1.4rem;
     color: #0078d4;
@@ -53,14 +48,15 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,120,212,0.3);
     color: #fff;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1rem;
   }
-  @media (max-width: 1200px) {
+  @media (max-width:1200px) {
     .kpi-grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }
-  @media (max-width: 768px) {
+  @media (max-width:768px) {
     .kpi-grid {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -77,32 +73,8 @@
     margin-bottom: 6px;
   }
   .kpi-value {
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
-  /* バッジ */
-  .badge {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    color: #fff;
-    vertical-align: middle;
-    margin-right: 8px;
-  }
-  .badge-high {
-    border-left: 4px solid #d93025;
-    background-color: #d93025;
-  }
-  .badge-medium {
-    border-left: 4px solid #f9ab00;
-    background-color: #f9ab00;
-    color: #222;
-  }
-  .badge-low {
-    border-left: 4px solid #38bdf8;
-    background-color: #38bdf8;
+    font-size: 1.3rem;
+    font-weight: 900;
   }
   /* テーブル */
   table {
@@ -111,255 +83,291 @@
     font-size: 13px;
   }
   thead tr {
-    background-color: #0078d4;
+    background: #0078d4;
     color: #fff;
   }
   thead th {
     padding: 8px 12px;
     text-align: left;
-    font-weight: 700;
   }
   tbody tr:nth-child(odd) {
-    background-color: #f9fafb;
-  }
-  tbody tr:hover {
-    background-color: #e1f0ff;
+    background: #f9fafb;
   }
   tbody td {
     padding: 8px 12px;
     vertical-align: top;
   }
+  /* バッジ */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  .badge-resource {
+    background: #0078d4;
+  }
+  .badge-rbac {
+    background: #0078d4;
+  }
+  .badge-nsg {
+    background: #0078d4;
+  }
+  .badge-defender {
+    background: #0078d4;
+  }
+  .badge-advisor {
+    background: #0078d4;
+  }
+  .badge-high {
+    border-left: 4px solid #d93025;
+    background: #d93025;
+  }
+  .badge-medium {
+    border-left: 4px solid #f9ab00;
+    background: #f9ab00;
+    color: #222;
+  }
+  .badge-low {
+    border-left: 4px solid #38bdf8;
+    background: #38bdf8;
+  }
   /* リスクカード */
   .risk-card {
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    padding: 20px 24px;
+    margin-bottom: 16px;
   }
-  .risk-card .badge {
-    margin-bottom: 8px;
-  }
-  .risk-card h3 {
-    margin: 0 0 8px 0;
+  .risk-header {
     font-weight: 700;
     font-size: 1.1rem;
-    color: #0078d4;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .risk-card p {
-    margin: 0 0 12px 0;
+  .risk-badge {
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #fff;
   }
-  .risk-card ul {
-    margin: 0;
-    padding-left: 18px;
+  .risk-high {
+    background: #d93025;
+    border-left: 4px solid #d93025;
   }
-  .risk-card ul li {
-    margin-bottom: 6px;
+  .risk-medium {
+    background: #f9ab00;
+    border-left: 4px solid #f9ab00;
+    color: #222;
   }
-  .risk-card a {
+  .risk-low {
+    background: #38bdf8;
+    border-left: 4px solid #38bdf8;
+  }
+  .risk-desc {
+    margin: 8px 0 12px 0;
+    font-size: 0.95rem;
+  }
+  .risk-links a {
     color: #0078d4;
     text-decoration: none;
+    margin-right: 12px;
+    font-size: 0.9rem;
   }
-  .risk-card a:hover {
+  .risk-links a:hover {
     text-decoration: underline;
   }
-  /* 付録テーブルのスクロール対応 */
-  .appendix-table-wrapper {
-    overflow-x: auto;
+  /* 30日アクションプラン */
+  .action-plan {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  .action-plan li {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+  }
+  .role {
+    font-weight: 700;
+    color: #0078d4;
+  }
+  /* 付録テーブル */
+  .appendix-table {
+    font-size: 13px;
   }
   /* フッター */
   footer {
-    text-align: center;
-    padding: 16px 12px;
-    font-size: 0.85rem;
-    color: #666;
-    border-top: 1px solid #ddd;
-    background: #fff;
     position: fixed;
     bottom: 0;
-    width: 100%;
-    max-width: 1200px;
-    left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 -1px 4px rgba(0,0,0,0.05);
-    font-family: "Yu Gothic", "Segoe UI", sans-serif;
+    left: 0; right: 0;
+    background: #0078d4;
+    color: #fff;
+    font-size: 13px;
+    text-align: center;
+    padding: 8px 0;
+    font-weight: 600;
+    font-family:"Yu Gothic","Segoe UI",sans-serif;
   }
-  /* リンクボタン */
-  .link-button {
+  /* リンク */
+  a {
     color: #0078d4;
-    font-weight: 700;
     text-decoration: none;
   }
-  .link-button:hover {
+  a:hover {
     text-decoration: underline;
   }
 </style>
 </head>
 <body>
-<header>
-  Azure 総合運用監査レポート
-</header>
+<header>Azure 総合運用監査レポート</header>
 <main>
-  <section aria-label="エグゼクティブサマリ">
-    <h2>エグゼクティブサマリ</h2>
-    <div class="kpi-grid" role="list">
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">リソース総数</div>
-        <div class="kpi-value">60</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">リソースグループ数</div>
-        <div class="kpi-value">6</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">リージョン数</div>
-        <div class="kpi-value">4</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">VM 件数</div>
-        <div class="kpi-value">未取得</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Storage (LRS) 件数</div>
-        <div class="kpi-value">未取得</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Public IP 件数</div>
-        <div class="kpi-value">未取得</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">タグ付与率</div>
-        <div class="kpi-value">50.0%</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">RBAC 総割り当て</div>
-        <div class="kpi-value">未取得</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Owner 割り当て数</div>
-        <div class="kpi-value">13</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">UAA 割り当て数</div>
-        <div class="kpi-value">2</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">孤児候補件数</div>
-        <div class="kpi-value">39</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">MG スコープの Owner</div>
-        <div class="kpi-value">未取得</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">NSG 数</div>
-        <div class="kpi-value">未取得</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">NSG 総ルール数</div>
-        <div class="kpi-value">未取得</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">NSG 高リスクルール件数</div>
-        <div class="kpi-value">0</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Defender Unhealthy 件数</div>
-        <div class="kpi-value">287</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Defender High 件数</div>
-        <div class="kpi-value">91</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Defender Medium 件数</div>
-        <div class="kpi-value">未集計</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Defender Low 件数</div>
-        <div class="kpi-value">未集計</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Defender 最頻出推奨事項</div>
-        <div class="kpi-value" style="font-weight:400; font-size:0.9rem;">Update libcurl3-gnutls_for_linux 等</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Advisor 件数</div>
-        <div class="kpi-value">未取得</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Advisor High Impact 件数</div>
-        <div class="kpi-value">32</div>
-      </div>
-      <div class="kpi-item" role="listitem">
-        <div class="kpi-label">Advisor 最頻出問題</div>
-        <div class="kpi-value" style="font-weight:400; font-size:0.9rem;">EDR solution should be installed on Virtual Machines</div>
-      </div>
-    </div>
-    <p style="margin-top:20px; font-weight:600; color:#0078d4;">
-      本レポートは、以下の4つの主要改善領域にフォーカスしています。<br />
-      <strong>公開境界 / 特権境界 / 監視フィードバック / ガバナンス基盤</strong>
-    </p>
-  </section>
 
-  <section aria-label="全体サマリ表">
-    <h2>全体サマリ表</h2>
-    <table role="table" aria-describedby="summary-desc">
-      <caption id="summary-desc" style="text-align:left; font-weight:600; margin-bottom:12px;">各ドメインの主要指標一覧</caption>
-      <thead>
-        <tr>
-          <th>ドメイン</th>
-          <th>主要指標1</th>
-          <th>主要指標2</th>
-          <th>主要指標3</th>
-          <th>主要指標4</th>
-          <th>主要指標5</th>
-          <th>主要指標6</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="badge" style="background:#0078d4;">リソース</span></td>
-          <td>総数: 60</td>
-          <td>RG数: 6</td>
-          <td>リージョン数: 4</td>
-          <td>VM件数: 未取得</td>
-          <td>Storage(LRS): 未取得</td>
-          <td>タグ付与率: 50.0%</td>
-        </tr>
-        <tr>
-          <td><span class="badge" style="background:#0078d4;">RBAC</span></td>
-          <td>Owner: 13</td>
-          <td>UAA: 2</td>
-          <td>孤児候補: 39</td>
-          <td>MGスコープOwner: 未取得</td>
-          <td>総割り当て: 未取得</td>
-          <td>未取得</td>
-        </tr>
-        <tr>
-          <td><span class="badge" style="background:#0078d4;">NSG</span></td>
-          <td>NSG数: 未取得</td>
-          <td>総ルール数: 未取得</td>
-          <td>高リスクルール: 0</td>
-          <td>未取得</td>
-          <td>未取得</td>
-          <td>未取得</td>
-        </tr>
-        <tr>
-          <td><span class="badge" style="background:#0078d4;">Defender</span></td>
-          <td>Unhealthy: 287</td>
-          <td>High: 91</td>
-          <td>Medium: 未集計</td>
-          <td>Low: 未集計</td>
-          <td>最頻出推奨: Update libcurl3-gnutls_for_linux 等</td>
-          <td>未取得</td>
-        </tr>
-        <tr>
-          <td><span class="badge" style="background:#0078d4;">Advisor</span></td>
-          <td>High Impact: 32</td>
-          <td>最頻出問題: EDR solution should be installed on Virtual Machines</td>
-          <td>件数: 未取得</td>
-          <td>未取得</td>
-          <td>未取得</td
+<section aria-labelledby="exec-summary-title">
+  <h2 id="exec-summary-title">エグゼクティブサマリ</h2>
+  <div class="kpi-grid" role="list" aria-label="主要数値">
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">リソース総数</div>
+      <div class="kpi-value">60</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">リソースグループ数</div>
+      <div class="kpi-value">6</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">リージョン数</div>
+      <div class="kpi-value">4</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">VM 件数</div>
+      <div class="kpi-value">データなし</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Storage (LRS) 件数</div>
+      <div class="kpi-value">データなし</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Public IP 件数</div>
+      <div class="kpi-value">データなし</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">タグ付与率</div>
+      <div class="kpi-value">50.0%</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">RBAC 総割り当て</div>
+      <div class="kpi-value">未取得</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Owner 割り当て数</div>
+      <div class="kpi-value">13</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">UAA 割り当て数</div>
+      <div class="kpi-value">2</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">孤児候補件数</div>
+      <div class="kpi-value">39</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">MG スコープの Owner</div>
+      <div class="kpi-value">未取得</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">NSG 数</div>
+      <div class="kpi-value">未取得</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">NSG 総ルール数</div>
+      <div class="kpi-value">未取得</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">NSG 高リスクルール件数</div>
+      <div class="kpi-value">0</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Defender Unhealthy 件数</div>
+      <div class="kpi-value">287</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Defender High 件数</div>
+      <div class="kpi-value">91</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Defender Medium 件数</div>
+      <div class="kpi-value">未集計</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Defender Low 件数</div>
+      <div class="kpi-value">未集計</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Defender 最頻出推奨事項</div>
+      <div class="kpi-value">Update python3.10-minimal_for_linux (High)</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Advisor 件数</div>
+      <div class="kpi-value">未取得</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Advisor High Impact 件数</div>
+      <div class="kpi-value">33</div>
+    </div>
+    <div class="kpi-item" role="listitem">
+      <div class="kpi-label">Advisor 最頻出問題</div>
+      <div class="kpi-value">Enable zone redundancy for storage accounts</div>
+    </div>
+  </div>
+  <p style="margin-top:16px; font-weight:700; color:#0078d4;">主要改善領域:</p>
+  <ul>
+    <li><strong>公開境界</strong> - NSG 高リスクルール件数 0 件、Public IP 件数は未取得。公開境界の露出リスクは低いが、Public IP 情報の取得が必要。</li>
+    <li><strong>特権境界</strong> - Owner 13 件、UAA 2 件、孤児候補 39 件。特権ロールの恒久付与と孤児アカウントの管理強化が必要。</li>
+    <li><strong>監視フィードバック</strong> - Defender Unhealthy 287 件（High 91 件含む）、Advisor High Impact 33 件。セキュリティ態勢の改善と Advisor フィードバックの活用が課題。</li>
+    <li><strong>ガバナンス基盤</strong> - タグ付与率 50%。タグ管理やストレージ冗長性の見直しが必要。</li>
+  </ul>
+</section>
+
+<section aria-labelledby="summary-table-title">
+  <h2 id="summary-table-title">全体サマリ表</h2>
+  <table role="table" aria-describedby="summary-table-desc">
+    <caption id="summary-table-desc" class="sr-only">各ドメインの主要指標一覧</caption>
+    <thead>
+      <tr>
+        <th>ドメイン</th>
+        <th>主要指標1</th>
+        <th>主要指標2</th>
+        <th>主要指標3</th>
+        <th>主要指標4</th>
+        <th>主要指標5</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-resource">リソース</span></td>
+        <td>総数: 60</td>
+        <td>RG数: 6</td>
+        <td>リージョン数: 4</td>
+        <td>タグ付与率: 50.0%</td>
+        <td>VM/Storage/Public IP: データなし</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-rbac">RBAC</span></td>
+        <td>Owner: 13</td>
+        <td>UAA: 2</td>
+        <td>孤児候補: 39</td>
+        <td>MGスコープOwner: 未取得</td>
+        <td>総割り当て: 未取得</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-nsg">NSG</span></td>
+
 <section><h2>潜在リスク Top 5</h2><p>データなし（生成時補完）</p></section>
-<section><h2>30日アクションプラン</h2><ol><li>Week 1: 優先リスクの棚卸しと担当割り当て</li><li>Week 2: 高優先度項目の対処開始</li><li>Week 3: 対処結果の検証と未対応項目の再計画</li><li>Week 4: 定例レビューと次月計画の確定</li></ol></section>

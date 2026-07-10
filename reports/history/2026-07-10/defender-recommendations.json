@@ -7650,24 +7650,6 @@
     "AssessmentId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-PW-OPS-DEV-JPE-27161/providers/Microsoft.Compute/virtualMachines/vm-pw-ops-dev-jpw-27161/providers/Microsoft.Security/assessments/1195afff-c881-495e-9bc5-1486211ae03f"
   },
   {
-    "AssessmentName": "805651bc-6ecd-4c73-9b55-97a19d0582d0",
-    "DisplayName": "Management ports of virtual machines should be protected with just-in-time network access control",
-    "Severity": "High",
-    "Status": "Healthy",
-    "StatusCause": "VmHasNoPublicIp",
-    "StatusDescription": "This VM has no public IP address.",
-    "SecurityIssue": "Unknown",
-    "SecurityCategories": "Misconfigurations",
-    "RecommendationCategory": "Unknown",
-    "Description": "Defender for Cloud has identified some overly-permissive inbound rules for management ports in your Network Security Group. Enable just-in-time access control to protect your VM from internet-based brute-force attacks. Learn more in <a target=\"_blank\" href=\"https://docs.microsoft.com/azure/defender-for-cloud/just-in-time-access-overview?wt.mc_id=defenderforcloud_inproduct_portal_recoremediation\">Understanding just-in-time (JIT) VM access</a>.",
-    "Remediation": "To enable just-in-time VM access:<br><ul><li>Select one or more VMs from the list below and select \"Remediate\", or select \"Take action\" if you've arrived from a recommendation for a specific VM.</li><li>On the \"JIT VM access configuration\" page, define the ports for which the just-in-time VM access will be applicable.<ul><li>To add additional ports, select the \"Add\" button on the top left, or select an existing port and edit it.</li><li>On the \"Add port configuration\" pane, enter the required parameters.</li></ul></li><li>Select \"Save\".</li></ul>",
-    "ResourceId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-MOBILE-GHC-CLI/providers/Microsoft.Compute/virtualMachines/mobvmghc-vm-yypwhhh6st5ky",
-    "ResourceName": "mobvmghc-vm-yypwhhh6st5ky",
-    "ResourceType": "Microsoft.Compute/virtualMachines",
-    "ResourceGroupName": "RG-MOBILE-GHC-CLI",
-    "AssessmentId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-MOBILE-GHC-CLI/providers/Microsoft.Compute/virtualMachines/mobvmghc-vm-yypwhhh6st5ky/providers/Microsoft.Security/assessments/805651bc-6ecd-4c73-9b55-97a19d0582d0"
-  },
-  {
     "AssessmentName": "f2f595ec-5dc6-68b4-82ef-b63563e9c610",
     "DisplayName": "Azure Backup should be enabled for virtual machines",
     "Severity": "Low",
@@ -8512,5 +8494,41 @@
     "ResourceType": "Microsoft.Compute/virtualMachines",
     "ResourceGroupName": "RG-NWRI-JPE-20260709",
     "AssessmentId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-src-jpe/providers/Microsoft.Security/assessments/ffff0522-1e88-47fc-8382-2a80ba848f5d"
+  },
+  {
+    "AssessmentName": "805651bc-6ecd-4c73-9b55-97a19d0582d0",
+    "DisplayName": "Management ports of virtual machines should be protected with just-in-time network access control",
+    "Severity": "High",
+    "Status": "Healthy",
+    "StatusCause": "VmHasNoPublicIp",
+    "StatusDescription": "This VM has no public IP address.",
+    "SecurityIssue": "Unknown",
+    "SecurityCategories": "Misconfigurations",
+    "RecommendationCategory": "Unknown",
+    "Description": "Defender for Cloud has identified some overly-permissive inbound rules for management ports in your Network Security Group. Enable just-in-time access control to protect your VM from internet-based brute-force attacks. Learn more in <a target=\"_blank\" href=\"https://docs.microsoft.com/azure/defender-for-cloud/just-in-time-access-overview?wt.mc_id=defenderforcloud_inproduct_portal_recoremediation\">Understanding just-in-time (JIT) VM access</a>.",
+    "Remediation": "To enable just-in-time VM access:<br><ul><li>Select one or more VMs from the list below and select \"Remediate\", or select \"Take action\" if you've arrived from a recommendation for a specific VM.</li><li>On the \"JIT VM access configuration\" page, define the ports for which the just-in-time VM access will be applicable.<ul><li>To add additional ports, select the \"Add\" button on the top left, or select an existing port and edit it.</li><li>On the \"Add port configuration\" pane, enter the required parameters.</li></ul></li><li>Select \"Save\".</li></ul>",
+    "ResourceId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-dst-jpe",
+    "ResourceName": "vm-nwri-dst-jpe",
+    "ResourceType": "Microsoft.Compute/virtualMachines",
+    "ResourceGroupName": "RG-NWRI-JPE-20260709",
+    "AssessmentId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-dst-jpe/providers/Microsoft.Security/assessments/805651bc-6ecd-4c73-9b55-97a19d0582d0"
+  },
+  {
+    "AssessmentName": "805651bc-6ecd-4c73-9b55-97a19d0582d0",
+    "DisplayName": "Management ports of virtual machines should be protected with just-in-time network access control",
+    "Severity": "High",
+    "Status": "Healthy",
+    "StatusCause": "VmHasNoPublicIp",
+    "StatusDescription": "This VM has no public IP address.",
+    "SecurityIssue": "Unknown",
+    "SecurityCategories": "Misconfigurations",
+    "RecommendationCategory": "Unknown",
+    "Description": "Defender for Cloud has identified some overly-permissive inbound rules for management ports in your Network Security Group. Enable just-in-time access control to protect your VM from internet-based brute-force attacks. Learn more in <a target=\"_blank\" href=\"https://docs.microsoft.com/azure/defender-for-cloud/just-in-time-access-overview?wt.mc_id=defenderforcloud_inproduct_portal_recoremediation\">Understanding just-in-time (JIT) VM access</a>.",
+    "Remediation": "To enable just-in-time VM access:<br><ul><li>Select one or more VMs from the list below and select \"Remediate\", or select \"Take action\" if you've arrived from a recommendation for a specific VM.</li><li>On the \"JIT VM access configuration\" page, define the ports for which the just-in-time VM access will be applicable.<ul><li>To add additional ports, select the \"Add\" button on the top left, or select an existing port and edit it.</li><li>On the \"Add port configuration\" pane, enter the required parameters.</li></ul></li><li>Select \"Save\".</li></ul>",
+    "ResourceId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-src-jpe",
+    "ResourceName": "vm-nwri-src-jpe",
+    "ResourceType": "Microsoft.Compute/virtualMachines",
+    "ResourceGroupName": "RG-NWRI-JPE-20260709",
+    "AssessmentId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-src-jpe/providers/Microsoft.Security/assessments/805651bc-6ecd-4c73-9b55-97a19d0582d0"
   }
 ]
