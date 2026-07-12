@@ -228,7 +228,7 @@ $payload = @{
         @{ role = 'user'; content = $userPrompt }
     )
     temperature = 0.2
-    max_tokens = 3500
+    max_tokens = 16000
 }
 
 $headers = @{
