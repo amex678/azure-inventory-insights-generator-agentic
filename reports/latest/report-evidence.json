@@ -1,7 +1,7 @@
 {
-  "runId": "29222405841",
+  "runId": "29246044222",
   "repository": "amex678/azure-inventory-insights-generator-ai",
-  "generatedAt": "2026-07-13T03:51:36.3724695+00:00",
+  "generatedAt": "2026-07-13T11:28:47.1842734+00:00",
   "model": "openai/gpt-4.1-mini",
   "endpoint": "https://models.github.ai/inference/chat/completions",
   "metrics": {
@@ -14,12 +14,12 @@
     "nsgRisky": 0,
     "defenderUnhealthy": 287,
     "defenderHigh": 89,
-    "advisorHigh": 33,
+    "advisorHigh": 32,
     "tagCoverage": 50.0
   },
   "usage": {
-    "promptTokens": 7899,
-    "completionTokens": 7708,
-    "totalTokens": 15607
+    "promptTokens": 7746,
+    "completionTokens": 7551,
+    "totalTokens": 15297
   }
 }
