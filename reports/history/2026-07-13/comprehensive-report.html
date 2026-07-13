@@ -7,33 +7,35 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Yu+Gothic&family=Segoe+UI&display=swap');
   body {
-    font-family: "Yu Gothic", "Segoe UI", sans-serif;
-    background-color: #f5f7fa;
     margin: 0; padding: 0;
+    font-family: "Yu Gothic", "Segoe UI", sans-serif;
+    background: #f5f7fa;
     line-height: 1.7;
-    color: #222;
+    color: #333;
   }
   header {
-    background: linear-gradient(90deg, #0078d4, #50e6ff);
+    background: linear-gradient(90deg, #0078d4 0%, #50e6ff 100%);
     color: #fff;
     padding: 28px 32px;
     font-size: 1.6rem;
     font-weight: 700;
+    letter-spacing: 0.05em;
   }
   main {
     max-width: 1200px;
     margin: 24px auto 80px;
     padding: 0 16px;
   }
+  /* KPI グリッド */
   .kpi-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 16px;
-    background: linear-gradient(90deg, #0078d4, #50e6ff);
+    background: linear-gradient(90deg, #0078d4 0%, #50e6ff 100%);
     padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,120,212,0.3);
-    margin-bottom: 32px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    margin-bottom: 24px;
   }
   @media (max-width: 960px) {
     .kpi-grid {
@@ -51,49 +53,61 @@
     padding: 20px 24px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     color: #0078d4;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .kpi-value {
-    font-size: 2.8rem;
     font-weight: 700;
-    line-height: 1;
-    margin-bottom: 8px;
+    font-size: 1.4rem;
+    text-align: center;
+    user-select: none;
   }
   .kpi-label {
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 8px;
   }
+  /* セクション共通 */
   section {
-    background: #fff;
+    background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     padding: 24px 32px;
     margin-bottom: 32px;
   }
-  section h2 {
+  h2 {
     margin-top: 0;
     color: #0078d4;
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     border-bottom: 2px solid #0078d4;
     padding-bottom: 8px;
-    margin-bottom: 24px;
   }
-  .summary-text {
-    font-size: 1rem;
-    margin-bottom: 24px;
-    white-space: pre-wrap;
+  /* バッジ */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    user-select: none;
+    vertical-align: middle;
+    margin-right: 8px;
+    border-left-width: 4px;
+    border-left-style: solid;
   }
-  ul {
-    margin: 0 0 24px 20px;
+  .badge-high {
+    background-color: #d93025;
+    border-left-color: #d93025;
   }
-  ul li {
-    margin-bottom: 8px;
+  .badge-medium {
+    background-color: #f9ab00;
+    border-left-color: #f9ab00;
   }
+  .badge-low {
+    background-color: #38bdf8;
+    border-left-color: #38bdf8;
+  }
+  /* テーブル */
   table {
     width: 100%;
     border-collapse: collapse;
@@ -113,31 +127,70 @@
   }
   tbody td {
     padding: 8px 12px;
-    vertical-align: top;
+    border-bottom: 1px solid #e5e7eb;
   }
-  .badge {
-    display: inline-block;
+  /* リスクカード */
+  .risk-card {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    background: #ffffff;
+    border-left-width: 6px;
+    border-left-style: solid;
+  }
+  .risk-high {
+    border-left-color: #d93025;
+  }
+  .risk-medium {
+    border-left-color: #f9ab00;
+  }
+  .risk-low {
+    border-left-color: #38bdf8;
+  }
+  .risk-title {
     font-weight: 700;
-    font-size: 12px;
-    padding: 2px 8px;
-    border-radius: 4px;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+    color: #333;
+  }
+  .risk-desc {
+    margin: 0 0 8px 0;
+    color: #555;
+  }
+  .risk-links a {
+    color: #0078d4;
+    text-decoration: none;
+    margin-right: 12px;
+    font-size: 0.85rem;
+  }
+  .risk-links a:hover {
+    text-decoration: underline;
+  }
+  /* 箇条書き */
+  ul {
+    padding-left: 1.2em;
+    margin-top: 0.3em;
+    margin-bottom: 1.2em;
+    color: #444;
+  }
+  ul li {
+    margin-bottom: 0.6em;
+  }
+  /* フッター */
+  footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #0078d4;
     color: #fff;
-    border-left: 4px solid transparent;
-    margin-right: 8px;
-    vertical-align: middle;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 12px 8px;
+    user-select: none;
+    font-weight: 600;
+    font-family: "Yu Gothic", "Segoe UI", sans-serif;
   }
-  .badge-high {
-    background-color: #d93025;
-    border-left-color: #a52714;
-  }
-  .badge-medium {
-    background-color: #f9ab00;
-    border-left-color: #c27800;
-  }
-  .badge-low {
-    background-color: #38bdf8;
-    border-left-color: #0ea5e9;
-  }
+  /* リンク */
   a {
     color: #0078d4;
     text-decoration: none;
@@ -145,115 +198,60 @@
   a:hover {
     text-decoration: underline;
   }
-  footer {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: #0078d4;
-    color: #fff;
-    font-size: 0.9rem;
-    text-align: center;
-    padding: 12px 8px;
-    font-weight: 600;
-    font-family: "Yu Gothic", "Segoe UI", sans-serif;
-  }
-  .risk-card {
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    background: #fff;
-    border-left: 8px solid transparent;
-  }
-  .risk-card.high {
-    border-left-color: #d93025;
-  }
-  .risk-card.medium {
-    border-left-color: #f9ab00;
-  }
-  .risk-card.low {
-    border-left-color: #38bdf8;
-  }
-  .risk-card h3 {
-    margin-top: 0;
-    font-weight: 700;
-    color: #222;
-    font-size: 1.2rem;
-  }
-  .risk-card p {
-    margin: 8px 0 12px;
-    font-size: 0.95rem;
-  }
-  .risk-card ul {
-    margin-left: 20px;
-    margin-bottom: 0;
-  }
-  .risk-card ul li {
-    margin-bottom: 6px;
-  }
-  .risk-links a {
-    margin-right: 12px;
-    font-size: 0.9rem;
-  }
 </style>
 </head>
 <body>
 <header>Azure 総合運用監査レポート</header>
 <main>
   <!-- エグゼクティブサマリ -->
-  <section aria-label="エグゼクティブサマリ">
-    <h2>エグゼクティブサマリ</h2>
-    <div class="kpi-grid" role="list" aria-label="主要KPI指標">
-      <div class="kpi-card" role="listitem" tabindex="0" aria-label="リソース総数">
-        <div class="kpi-value">60</div>
-        <div class="kpi-label">リソース総数</div>
+  <section aria-labelledby="exec-summary-title">
+    <h2 id="exec-summary-title">エグゼクティブサマリ</h2>
+    <div class="kpi-grid" role="list" aria-label="主要KPI">
+      <div class="kpi-card" role="listitem" aria-label="リソース総数">
+        60<br /><span class="kpi-label">リソース総数</span>
       </div>
-      <div class="kpi-card" role="listitem" tabindex="0" aria-label="Defender High 件数">
-        <div class="kpi-value">89</div>
-        <div class="kpi-label">Defender High 件数</div>
+      <div class="kpi-card" role="listitem" aria-label="Defender High 件数">
+        89<br /><span class="kpi-label">Defender High 件数</span>
       </div>
-      <div class="kpi-card" role="listitem" tabindex="0" aria-label="Advisor High Impact 件数">
-        <div class="kpi-value">32</div>
-        <div class="kpi-label">Advisor High Impact 件数</div>
+      <div class="kpi-card" role="listitem" aria-label="Advisor High Impact 件数">
+        31<br /><span class="kpi-label">Advisor High Impact 件数</span>
       </div>
-      <div class="kpi-card" role="listitem" tabindex="0" aria-label="Owner 割り当て数">
-        <div class="kpi-value">13</div>
-        <div class="kpi-label">Owner 割り当て数</div>
+      <div class="kpi-card" role="listitem" aria-label="Owner 割り当て数">
+        13<br /><span class="kpi-label">Owner 割り当て数</span>
       </div>
-      <div class="kpi-card" role="listitem" tabindex="0" aria-label="タグ付与率">
-        <div class="kpi-value">50.0%</div>
-        <div class="kpi-label">タグ付与率</div>
+      <div class="kpi-card" role="listitem" aria-label="タグ付与率">
+        50.0%<br /><span class="kpi-label">タグ付与率</span>
       </div>
     </div>
-    <div class="summary-text" tabindex="0">
-      本サブスクリプションはリソース数60と中規模の環境であり、Defender for CloudのHighリスクが89件、AdvisorのHigh Impactが32件と高い数値を示しています。タグ付与率は50%と半数に留まり、ガバナンス基盤の強化が必要です。Owner割り当ては13件ですが、孤児アサインメントが39件と多く、特権境界の管理が課題です。公開境界のリスクはNSG上では検出されていませんが、監視フィードバックやガバナンス基盤の整備が急務です。Defender未有効やAdvisor未導入の未取得リスクはありませんが、現状のセキュリティ態勢ギャップは大きく、優先的な改善が望まれます。
-    </div>
-    <div>
-      <strong>主要懸念事項</strong>
-      <ul>
-        <li>Defender for CloudのHighリスク89件は重要な脆弱性や設定不備を示し、早急な対応が必要。</li>
-        <li>AdvisorのHigh Impact 32件は運用上の重大な改善点を示し、放置すると障害やセキュリティ事故のリスクが増大。</li>
-        <li>孤児アサインメント39件は特権境界の不明瞭化を招き、不正アクセスや権限濫用の温床となる。</li>
-        <li>タグ付与率50%はリソース管理・課金・監査の効率低下を招き、ガバナンス基盤の弱さを示す。</li>
-        <li>公開境界のNSGリスクは現時点で0件だが、監視フィードバックや公開IPの管理強化が必要。</li>
-      </ul>
-    </div>
-    <div>
-      <strong>強み</strong>
-      <ul>
-        <li>NSGにおけるリスクの高いルールは0件で、公開境界の基本的な防御は機能している。</li>
-        <li>Defender for Cloudは有効化されており、詳細なリスク検出が可能な状態である。</li>
-        <li>Advisorも導入済みで、運用改善のためのフィードバックが得られている。</li>
-        <li>リソース数60に対してOwner割り当て13件は適切な管理者割当の基盤がある。</li>
-        <li>複数リージョン（4地域）にまたがる運用で冗長性や分散運用の基盤がある。</li>
-      </ul>
-    </div>
+    <p>
+      本サブスクリプションはリソース数が60と中規模で、Defender for CloudのHighリスクが89件、AdvisorのHigh Impact推奨が31件と、セキュリティおよび運用面で複数の重要課題を抱えています。Ownerロールの割り当ては13件で、孤児アサインメントが39件と多く、特権境界の管理に課題が見られます。タグ付与率は50%と半数に留まり、ガバナンス基盤の強化が必要です。公開境界のリスクはNSG上は見られないものの、DefenderやAdvisorの指摘から監視フィードバックや運用改善が急務と推察されます。
+    </p>
+    <p>
+      これらの状況は、公開境界・特権境界・監視フィードバック・ガバナンス基盤の4つの主要改善領域において優先的な対応が求められています。特にDefenderの高リスク件数とAdvisorの高影響推奨は、セキュリティ態勢のベースライン整備と運用プロセスの見直しを促しています。
+    </p>
+    <h3>主要懸念事項</h3>
+    <ul>
+      <li>特権ロールの孤児アサインメントが39件と多く、権限の過剰付与や管理不全によるリスクが高い。</li>
+      <li>Defender for CloudのHighリスクが89件存在し、脆弱性や設定不備が多数放置されている。</li>
+      <li>AdvisorのHigh Impact推奨が31件あり、運用改善や可用性向上のための対応が遅れている。</li>
+      <li>タグ付与率が50%に留まり、リソース管理やコスト配分の透明性が不足している。</li>
+      <li>監視フィードバックループが不十分で、セキュリティ態勢の継続的改善が困難。</li>
+    </ul>
+    <h3>強み</h3>
+    <ul>
+      <li>NSGにおいてリスクの高いルールは検出されておらず、公開境界の直接的な脆弱性は低い。</li>
+      <li>リソースは6つのリソースグループに整理されており、一定の管理区分が存在する。</li>
+      <li>Defender for Cloudが有効化されており、多数の推奨事項を取得できている。</li>
+      <li>Advisorの推奨が活用されており、改善ポイントの把握が可能な状態にある。</li>
+      <li>Owner割り当てが13件あり、明確な管理責任者の存在が確認できる。</li>
+    </ul>
   </section>
 
   <!-- 全体サマリ表 -->
-  <section aria-label="全体サマリ表">
-    <h2>全体サマリ表</h2>
-    <table role="table" aria-describedby="summary-desc">
-      <caption id="summary-desc" class="sr-only">Azureサブスクリプションの各ドメイン主要指標一覧</caption>
+  <section aria-labelledby="summary-table-title">
+    <h2 id="summary-table-title">全体サマリ表</h2>
+    <table role="table" aria-describedby="summary-table-desc">
+      <caption id="summary-table-desc" class="sr-only">Azureサブスクリプションの各ドメイン主要指標一覧</caption>
       <thead>
         <tr>
           <th>ドメイン</th>
@@ -271,7 +269,7 @@
         </tr>
         <tr>
           <td>RBAC</td>
-          <td>Owner割り当て数</td>
+          <td>Owner 割り当て数</td>
           <td>13</td>
           <td>UAA割り当て: 2、孤児割り当て: 39</td>
         </tr>
@@ -279,117 +277,120 @@
           <td>NSG</td>
           <td>リスク高ルール数</td>
           <td>0</td>
-          <td>公開境界のリスクルールなし</td>
+          <td>公開境界のリスクは検出されず</td>
         </tr>
         <tr>
           <td>Defender for Cloud</td>
-          <td>未正常件数</td>
+          <td>Unhealthy 件数</td>
           <td>287</td>
-          <td>High: 89件含む</td>
-        </tr>
-        <tr>
-          <td>Defender for Cloud</td>
-          <td>High Severity件数</td>
-          <td>89</td>
-          <td>重要な脆弱性多数</td>
+          <td>High Severity: 89件</td>
         </tr>
         <tr>
           <td>Azure Advisor</td>
-          <td>High Impact件数</td>
-          <td>32</td>
-          <td>運用改善の優先課題</td>
+          <td>High Impact 件数</td>
+          <td>31</td>
+          <td>主に可用性・セキュリティ関連</td>
         </tr>
         <tr>
-          <td>タグ</td>
-          <td>付与率</td>
+          <td>ガバナンス</td>
+          <td>タグ付与率</td>
           <td>50.0%</td>
-          <td>半数のリソースにタグ付与</td>
+          <td>リソースの半数にタグ付与済み</td>
         </tr>
       </tbody>
     </table>
   </section>
 
   <!-- 潜在リスク Top 5 -->
-  <section aria-label="潜在リスク Top 5">
-    <h2>潜在リスク Top 5</h2>
+  <section aria-labelledby="top5-risks-title">
+    <h2 id="top5-risks-title">潜在リスク Top 5</h2>
 
-    <article class="risk-card low" aria-labelledby="risk1-title">
-      <h3 id="risk1-title"><span class="badge badge-low">Low</span>公開境界の露出</h3>
-      <p>NSGの高リスクルールは0件であり、公開境界の直接的なリスクは低いと判断されます。ただし、公開IPの管理状況は未取得のため、BastionやJITアクセス、Application Gateway WAFの導入を推奨します。</p>
+    <article class="risk-card risk-low" aria-label="公開境界の露出リスク">
+      <div class="risk-title"><span class="badge badge-low">Low</span>公開境界の露出</div>
+      <p class="risk-desc">
+        NSGにリスクの高いルールは0件であり、公開境界の直接的な脆弱性は低いと判断されます。ただしPublic IPの詳細は未取得のため、BastionやJITアクセス、Application Gateway WAFの導入を推奨します。
+      </p>
       <div class="risk-links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/security/fundamentals/network-best-practices" target="_blank" rel="noopener">ネットワークセキュリティベストプラクティス</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/bastion/bastion-overview" target="_blank" rel="noopener">Azure Bastionの概要</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/security/fundamentals/network-best-practices" target="_blank" rel="noopener">ネットワーク セキュリティのベストプラクティス</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/bastion/bastion-overview" target="_blank" rel="noopener">Azure Bastion の概要</a>
       </div>
     </article>
 
-    <article class="risk-card high" aria-labelledby="risk2-title">
-      <h3 id="risk2-title"><span class="badge badge-high">High</span>特権ロールの恒久付与と blast radius</h3>
-      <p>Owner割り当て13件に加え、孤児アサインメントが39件と多く、特権境界の管理が不十分です。これにより権限濫用や不正アクセスのリスクが高まります。PIM導入やマネージドID、定期的なAccess Reviewの実施が必須です。</p>
+    <article class="risk-card risk-high" aria-label="特権ロールの恒久付与と blast radius">
+      <div class="risk-title"><span class="badge badge-high">High</span>特権ロールの恒久付与と blast radius</div>
+      <p class="risk-desc">
+        Owner割り当て13件に加え、孤児割り当て39件が存在し、特権境界の管理不全が懸念されます。過剰な権限付与はセキュリティ侵害時の影響範囲を拡大させるため、PIM導入やAccess Reviewの実施が必須です。
+      </p>
       <div class="risk-links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/active-directory/privileged-identity-management/pim-configure" target="_blank" rel="noopener">Azure PIMの設定</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/active-directory/manage-apps/access-review-overview" target="_blank" rel="noopener">Access Reviewの概要</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/active-directory/privileged-identity-management-pim" target="_blank" rel="noopener">Azure AD Privileged Identity Management</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/role-based-access-control/role-assignments-portal" target="_blank" rel="noopener">ロール割り当ての管理</a>
       </div>
     </article>
 
-    <article class="risk-card high" aria-labelledby="risk3-title">
-      <h3 id="risk3-title"><span class="badge badge-high">High</span>Defender for Cloud のセキュリティ態勢ギャップ</h3>
-      <p>Defender for Cloudは有効化済みですが、High Severityが89件、Unhealthyが287件と多く、セキュリティ態勢に大きなギャップがあります。Foundational CSPMの導入とSecure Scoreの月次レビューを強化してください。</p>
+    <article class="risk-card risk-high" aria-label="Defender for Cloud のセキュリティ態勢ギャップ">
+      <div class="risk-title"><span class="badge badge-high">High</span>Defender for Cloud のセキュリティ態勢ギャップ</div>
+      <p class="risk-desc">
+        Defender for Cloudは有効化済みですが、High Severityの不健康リスクが89件と多く、基礎的なセキュリティ対策が不十分です。Foundational CSPMの導入とSecure Scoreの月次レビューを強化すべきです。
+      </p>
       <div class="risk-links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/security-center-secure-score" target="_blank" rel="noopener">Secure Scoreの活用</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/security-center-fundamentals" target="_blank" rel="noopener">Defender for Cloud 基礎</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/security-center-secure-score" target="_blank" rel="noopener">Azure Security Center Secure Score</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/security-center/security-center-fundamentals" target="_blank" rel="noopener">Defender for Cloud の基本</a>
       </div>
     </article>
 
-    <article class="risk-card high" aria-labelledby="risk4-title">
-      <h3 id="risk4-title"><span class="badge badge-high">High</span>Advisor フィードバックループ不在</h3>
-      <p>AdvisorのHigh Impactが32件存在し、運用改善の重要な指摘が多数あります。これらを月次レビューに組み込み、Cost Managementと連動した改善サイクルを確立することが推奨されます。</p>
+    <article class="risk-card risk-high" aria-label="Advisor フィードバックループ不在">
+      <div class="risk-title"><span class="badge badge-high">High</span>Advisor フィードバックループ不在</div>
+      <p class="risk-desc">
+        AdvisorのHigh Impact推奨が31件存在し、運用改善やコスト管理の機会損失が懸念されます。月次レビュー体制の確立とCost Management連携による改善サイクルの構築が必要です。
+      </p>
       <div class="risk-links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/advisor/advisor-overview" target="_blank" rel="noopener">Azure Advisorの概要</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/cost-management-billing/costs/cost-analysis" target="_blank" rel="noopener">Cost Managementの活用</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/advisor/advisor-overview" target="_blank" rel="noopener">Azure Advisor の概要</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/cost-management-billing/costs/cost-analysis" target="_blank" rel="noopener">Azure Cost Management の活用</a>
       </div>
     </article>
 
-    <article class="risk-card medium" aria-labelledby="risk5-title">
-      <h3 id="risk5-title"><span class="badge badge-medium">Medium</span>ガバナンス基盤の弱さ</h3>
-      <p>タグ付与率50%はリソース管理の効率低下を招き、LRSのみのストレージやPublic IPの管理も課題です。Azure Policyやタグ継承、ZRS/GZRSへの冗長性移行を推進し、ガバナンス基盤を強化してください。</p>
+    <article class="risk-card risk-medium" aria-label="ガバナンス基盤の弱さ">
+      <div class="risk-title"><span class="badge badge-medium">Medium</span>ガバナンス基盤の弱さ</div>
+      <p class="risk-desc">
+        タグ付与率が50%に留まり、リソース管理やコスト配分の透明性が不足しています。加えてLRSのみのストレージやPublic IPの管理も課題。Azure PolicyやTag Inheritance、ZRS/GZRSへの移行を推奨します。
+      </p>
       <div class="risk-links">
-        <a href="https://learn.microsoft.com/ja-jp/azure/governance/policy/overview" target="_blank" rel="noopener">Azure Policyの概要</a>
-        <a href="https://learn.microsoft.com/ja-jp/azure/storage/common/storage-redundancy" target="_blank" rel="noopener">ストレージ冗長性の種類</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/governance/policy/overview" target="_blank" rel="noopener">Azure Policy の概要</a>
+        <a href="https://learn.microsoft.com/ja-jp/azure/storage/common/storage-redundancy" target="_blank" rel="noopener">Azure Storage の冗長性オプション</a>
       </div>
     </article>
   </section>
 
   <!-- 30日アクションプラン -->
-  <section aria-label="30日アクションプラン">
-    <h2>30日アクションプラン</h2>
+  <section aria-labelledby="action-plan-title">
+    <h2 id="action-plan-title">30日アクションプラン</h2>
     <ul>
-      <li><strong>Cloud Ops:</strong> 本レポートを関係者に展開し、改善計画の共有と進捗管理を開始。</li>
-      <li><strong>Security:</strong> Defender for CloudのHighリスク89件の詳細調査と優先対応を実施。</li>
-      <li><strong>Network:</strong> NSGルールの再確認と公開IP管理の強化、BastionおよびJITアクセスの導入検討。</li>
-      <li><strong>IAM:</strong> Ownerおよび孤児アサインメント39件の整理、PIM導入とAccess Reviewの計画策定。</li>
-      <li><strong>Governance:</strong> タグ付与率向上のためのポリシー適用とタグ継承設定、ストレージの冗長性見直し。</li>
-      <li><strong>FinOps:</strong> AdvisorのHigh Impact 32件を月次レビューに組み込み、コスト最適化施策を推進。</li>
-      <li><strong>Storage:</strong> LRSのみのストレージアカウントのZRS/GZRSへの移行計画を策定。</li>
-      <li><strong>管理者:</strong> 監視ベースラインの整備と定期レビュー会議の開催を開始し、継続的改善体制を構築。</li>
+      <li><strong>Cloud Ops:</strong> 本レポートを関係者に展開し、改善計画の共有と進捗管理を開始する。</li>
+      <li><strong>Security:</strong> Defender for CloudのHighリスク89件の優先対応を実施し、Foundational CSPMの強化を図る。</li>
+      <li><strong>Network:</strong> NSGルールの再確認とBastion/JITアクセスの導入検討を行い、公開境界の防御を強化する。</li>
+      <li><strong>IAM:</strong> Ownerおよび孤児アサインメントの整理とPIM導入による特権アクセス管理の強化を実施する。</li>
+      <li><strong>Governance:</strong> タグ付与の必須化ポリシーを適用し、Azure Policyでガバナンス基盤を整備する。</li>
+      <li><strong>FinOps:</strong> AdvisorのHigh Impact推奨31件を月次レビューに組み込み、コスト管理と運用改善を推進する。</li>
+      <li><strong>Storage:</strong> ストレージアカウントの冗長性をZRS/GZRSに移行し、高可用性を確保する。</li>
+      <li><strong>管理者:</strong> 監視ベースラインの整備と定期レビュー会議の開催を計画し、継続的改善体制を構築する。</li>
     </ul>
   </section>
 
   <!-- 付録 -->
-  <section aria-label="付録">
-    <h2>付録</h2>
+  <section aria-labelledby="appendix-title">
+    <h2 id="appendix-title">付録</h2>
 
-    <article aria-label="NSGルール ハイライト">
-      <h3>付録A: NSGルール ハイライト（高リスク優先 上位30）</h3>
-      <p>本環境ではリスクの高いNSGルールは検出されていません。</p>
+    <article aria-labelledby="appendix-nsg-title">
+      <h3 id="appendix-nsg-title">A: NSG ルール ハイライト（高リスク優先 上位 30）</h3>
+      <p>本サブスクリプションではリスクの高いNSGルールは検出されていません（0件）。</p>
     </article>
 
-    <article aria-label="Defender 推奨事項">
-      <h3>付録B: Defender 推奨事項（Unhealthy, Severity 順 上位30）</h3>
-      <table role="table" aria-describedby="defender-desc" style="font-size:13px; margin-top:12px;">
-        <caption id="defender-desc" class="sr-only">Defender for Cloudの未正常状態推奨事項一覧</caption>
+    <article aria-labelledby="appendix-defender-title">
+      <h3 id="appendix-defender-title">B: Defender 推奨事項（Unhealthy, Severity 順 上位 30）</h3>
+      <table>
         <thead>
           <tr>
-            <th>表示名</th>
+            <th>推奨名</th>
             <th>Severity</th>
             <th>状態</th>
             <th>リソース種別</th>
@@ -397,6 +398,7 @@
           </tr>
         </thead>
         <tbody>
+          <!-- 上位30件表示 -->
           <tr>
             <td>Update python3.10-minimal_for_linux</td>
             <td><span class="badge badge-high">High</span></td>
@@ -454,27 +456,27 @@
             <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-src-jpe</td>
           </tr>
           <tr>
-            <td>Update libnghttp2-14_for_linux</td>
+            <td>Update vim-common_for_linux</td>
             <td><span class="badge badge-high">High</span></td>
             <td>Unhealthy</td>
             <td>Microsoft.Compute/virtualMachines</td>
             <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-src-jpe</td>
           </tr>
           <tr>
-            <td>Update libpython3.10_for_linux</td>
+            <td>Update tar_for_linux</td>
             <td><span class="badge badge-high">High</span></td>
             <td>Unhealthy</td>
             <td>Microsoft.Compute/virtualMachines</td>
             <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-src-jpe</td>
           </tr>
+          <!-- 以降は省略 -->
         </tbody>
       </table>
     </article>
 
-    <article aria-label="Advisor 推奨事項">
-      <h3>付録C: Advisor 推奨事項（Impact 順 上位30）</h3>
-      <table role="table" aria-describedby="advisor-desc" style="font-size:13px; margin-top:12px;">
-        <caption id="advisor-desc" class="sr-only">Azure Advisorの推奨事項一覧</caption>
+    <article aria-labelledby="appendix-advisor-title">
+      <h3 id="appendix-advisor-title">C: Advisor 推奨事項（Impact 順 上位 30）</h3>
+      <table>
         <thead>
           <tr>
             <th>カテゴリ</th>
@@ -487,30 +489,6 @@
         </thead>
         <tbody>
           <tr>
-            <td>Security</td>
-            <td><span class="badge badge-high">High</span></td>
-            <td>System updates should be installed on your machines (powered by Azure Update Manager)</td>
-            <td>System updates should be installed on your machines (powered by Azure Update Manager)</td>
-            <td>Microsoft.Compute/virtualMachines</td>
-            <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourcegroups/rg-vmprov-jpe-20260709-1459/providers/microsoft.compute/virtualmachines/vmprovjpe202607091459</td>
-          </tr>
-          <tr>
-            <td>Security</td>
-            <td><span class="badge badge-high">High</span></td>
-            <td>System updates should be installed on your machines (powered by Azure Update Manager)</td>
-            <td>System updates should be installed on your machines (powered by Azure Update Manager)</td>
-            <td>Microsoft.Compute/virtualMachines</td>
-            <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourcegroups/rg-nwri-jpe-20260709/providers/microsoft.compute/virtualmachines/vm-nwri-src-jpe</td>
-          </tr>
-          <tr>
-            <td>OperationalExcellence</td>
-            <td><span class="badge badge-high">High</span></td>
-            <td>Enable Trusted Launch foundational excellence, and modern security for Existing Generation 2 VM(s)</td>
-            <td>Enable Trusted Launch foundational excellence, and modern security for Existing Generation 2 VM(s)</td>
-            <td>MICROSOFT.COMPUTE/VIRTUALMACHINES</td>
-            <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/rg-inventory-demo/providers/Microsoft.Compute/virtualMachines/vm-demo-mgmt-01</td>
-          </tr>
-          <tr>
             <td>HighAvailability</td>
             <td><span class="badge badge-high">High</span></td>
             <td>Use Availability zones for better resiliency and availability</td>
@@ -521,11 +499,36 @@
           <tr>
             <td>Security</td>
             <td><span class="badge badge-high">High</span></td>
-            <td>Linux virtual machines should enable Azure Disk Encryption or EncryptionAtHost.</td>
-            <td>Linux virtual machines should enable Azure Disk Encryption or EncryptionAtHost.</td>
+            <td>EDR configuration issues should be resolved on virtual machines</td>
+            <td>EDR configuration issues should be resolved on virtual machines</td>
             <td>Microsoft.Compute/virtualMachines</td>
-            <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourcegroups/rg-inventory-demo/providers/microsoft.compute/virtualmachines/vm-demo-db-01</td>
+            <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-dst-jpe</td>
           </tr>
+          <tr>
+            <td>Security</td>
+            <td><span class="badge badge-high">High</span></td>
+            <td>EDR configuration issues should be resolved on virtual machines</td>
+            <td>EDR configuration issues should be resolved on virtual machines</td>
+            <td>Microsoft.Compute/virtualMachines</td>
+            <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/RG-NWRI-JPE-20260709/providers/Microsoft.Compute/virtualMachines/vm-nwri-src-jpe</td>
+          </tr>
+          <tr>
+            <td>HighAvailability</td>
+            <td><span class="badge badge-high">High</span></td>
+            <td>Ensure Azure Disks are in the same zone as your VM for higher resiliency and availability</td>
+            <td>Ensure Azure Disks are in the same zone as your VM for higher resiliency and availability</td>
+            <td>MICROSOFT.COMPUTE/DISKS</td>
+            <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourcegroups/rg-inventory-demo/providers/microsoft.compute/disks/vm-demo-app-01_osdisk_1_e89fd7546f2f430bb4c2eda57be7a17c</td>
+          </tr>
+          <tr>
+            <td>OperationalExcellence</td>
+            <td><span class="badge badge-high">High</span></td>
+            <td>Enable Trusted Launch foundational excellence, and modern security for Existing Generation 2 VM(s)</td>
+            <td>Enable Trusted Launch foundational excellence, and modern security for Existing Generation 2 VM(s)</td>
+            <td>MICROSOFT.COMPUTE/VIRTUALMACHINES</td>
+            <td>/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/rg-inventory-demo/providers/Microsoft.Compute/virtualMachines/vm-demo-mgmt-01</td>
+          </tr>
+          <!-- 以降は省略 -->
         </tbody>
       </table>
     </article>
@@ -536,7 +539,7 @@
 </footer>
 <!-- MACHINE_EVIDENCE
 {
-  "generatedAt": "2026-07-13T11:25:50.4040115+00:00",
+  "generatedAt": "2026-07-13T14:56:38.7220563+00:00",
   "metrics": {
     "resourcesTotal": 60,
     "resourceGroups": 6,
@@ -547,7 +550,7 @@
     "nsgRisky": 0,
     "defenderUnhealthy": 287,
     "defenderHigh": 89,
-    "advisorHigh": 32,
+    "advisorHigh": 31,
     "tagCoverage": 50.0
   },
   "samples": {
@@ -571,12 +574,12 @@
     ],
     "advisor": [
       {
-        "Category": "Security",
+        "Category": "HighAvailability",
         "Impact": "High",
-        "Problem": "System updates should be installed on your machines (powered by Azure Update Manager)",
-        "Solution": "System updates should be installed on your machines (powered by Azure Update Manager)",
+        "Problem": "Use Availability zones for better resiliency and availability",
+        "Solution": "Use Availability zones for better resiliency and availability",
         "ResourceType": "Microsoft.Compute/virtualMachines",
-        "ResourceId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourcegroups/rg-vmprov-jpe-20260709-1459/providers/microsoft.compute/virtualmachines/vmprovjpe202607091459"
+        "ResourceId": "/subscriptions/1acecba7-23bd-4d4d-9770-0b11998514dc/resourceGroups/rg-mobile-ghc-cli/providers/Microsoft.Compute/virtualMachines/mobvmghc-vm-yypwhhh6st5ky"
       }
       /* 省略 */
     ]
