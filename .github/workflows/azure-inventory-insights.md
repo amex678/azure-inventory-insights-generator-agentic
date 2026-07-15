@@ -50,6 +50,7 @@ pre-agent-steps:
       Get-ChildItem -LiteralPath $env:GITHUB_WORKSPACE -Force |
         Remove-Item -Recurse -Force
       New-Item -ItemType Directory -Path (Join-Path $env:GITHUB_WORKSPACE 'agent-output') -Force | Out-Null
+      git init --initial-branch=main $env:GITHUB_WORKSPACE
 
 post-steps:
   - name: Pages 公開用ファイルを準備
