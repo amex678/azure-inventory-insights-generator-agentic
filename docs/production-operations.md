@@ -65,6 +65,7 @@ Agentic Workflowを迂回して公開しません。`New-AzAgentInput.ps1` と `
 
 ```powershell
 pwsh -NoProfile -File ./tests/Test-New-AzAgentInput.ps1
+pwsh -NoProfile -File ./tests/Test-AzAgentReport.ps1
 gh aw compile azure-inventory-production --strict
 ```
 
@@ -82,6 +83,7 @@ gh aw compile azure-inventory-production --strict
 
 ```powershell
 pwsh -NoProfile -File ./tests/Test-New-AzAgentInput.ps1
+pwsh -NoProfile -File ./tests/Test-AzAgentReport.ps1
 gh aw compile azure-inventory-production --strict
 git diff --check
 ```

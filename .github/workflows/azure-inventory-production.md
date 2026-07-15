@@ -47,8 +47,10 @@ pre-agent-steps:
     run: |
       $downloadedPath = Join-Path $env:RUNNER_TEMP 'azure-agent-input/inventory-summary.json'
       $inputPath = '/tmp/gh-aw/agent/inventory-summary.json'
+      $reportValidatorPath = '/tmp/gh-aw/agent/Test-AzAgentReport.ps1'
       ./scripts/Test-AzAgentInput.ps1 -InputPath $downloadedPath
       Copy-Item -LiteralPath $downloadedPath -Destination $inputPath -Force
+      Copy-Item -LiteralPath './scripts/Test-AzAgentReport.ps1' -Destination $reportValidatorPath -Force
 
       Get-ChildItem -LiteralPath $env:GITHUB_WORKSPACE -Force |
         Remove-Item -Recurse -Force
@@ -65,6 +67,7 @@ post-steps:
       if (-not (Test-Path -LiteralPath $reportPath -PathType Leaf)) {
         throw "Pages に公開する HTML が見つかりません: $reportPath"
       }
+      & '/tmp/gh-aw/agent/Test-AzAgentReport.ps1' -HtmlPath $reportPath
 
       New-Item -ItemType Directory -Path '_site' -Force | Out-Null
       Copy-Item -LiteralPath $reportPath -Destination '_site/index.html' -Force
@@ -89,7 +92,7 @@ safe-outputs:
 # Azure 棚卸し分析レポート（本番）
 
 `/tmp/gh-aw/agent/inventory-summary.json` にある匿名化済み集計データだけを使い、
-簡潔な日本語の HTML レポートを作成してください。
+経営層と運用責任者が優先順位を判断できる日本語の HTML レポートを作成してください。
 
 ## 守ること
 
@@ -99,16 +102,72 @@ safe-outputs:
 - Web、GitHub API、Azure API、Safe Outputs 以外の MCP サーバー、外部素材を使用しないでください。
 - `agent-output/azure-inventory-insights.html` の1ファイルだけを書き出してください。
 - HTML は UTF-8 の自己完結した静的ファイルにしてください。スクリプト、外部 CSS、外部画像、フォーム、実行可能な URL を含めないでください。
+- 数値を並べるだけの説明は避け、観察事実、評価、推奨対応を区別してください。
+- 入力にないタグ付与率、Public IP 数、孤児ロール、コスト金額、Secure Score などを補完しないでください。
+- 「脆弱性が存在する」「侵害されている」など、集計データだけでは断定できない表現を避けてください。
 
-## レポートに含める内容
+## レポート構成
 
-- タイトルと生成日時
-- 5つすべてのデータ領域の取得状況
-- `metrics` の値をそのまま使った KPI サマリー
-- `riskSummary` と `topRiskSamples` だけを使ったリスクサマリー
-- `governanceSummary` だけを使ったガバナンスサマリー
-- 「AI による解釈」と明記した、短い優先アクション一覧
-- Azure 本番環境から取得したデータを匿名化・集約したレポートであり、個別リソースを特定する情報は含まないという注意書き
+タイトル、生成日時、短い注意書きの直後から、次の順序で構成してください。
+
+### 1. エグゼクティブサマリー
+
+このセクションを本文の最初に置いてください。
+
+- KPI カードは最大5枚とし、リソース総数、Defender High、Advisor High Impact、Owner割り当て、危険なNSGルールを表示する
+- 200〜350文字程度の「総評」を置き、環境規模、最も大きいリスクの集中領域、優先対応理由を説明する
+- 「主要懸念事項」を3〜5件とし、各項目に根拠数値、なぜ重要か、想定される影響を含める
+- 「強み・確認できた統制」を2〜4件とし、0件の指標やデータ取得済みという事実も適切に評価する
+- 総評では、公開境界、特権境界、セキュリティ態勢、運用フィードバックのうち、入力から評価できる領域に触れる
+- 観察事実から導けない推測は「追加確認が必要」と明記する
+
+### 2. 全体サマリー表
+
+- 5つすべてのデータ領域の取得状況と件数を示す
+- `metrics` の値を変更せず、ドメイン、指標、値、評価の4列で8〜12行に整理する
+- 評価は「要対応」「要確認」「良好」のような短い語にし、数値だけで過剰に断定しない
+
+### 3. 潜在リスク Top 5
+
+- `riskSummary` と `topRiskSamples` だけを根拠に、優先度順で最大5件を示す
+- 各項目を「優先度」「観察事実」「影響」「推奨対応」の順で記述する
+- 同じカテゴリや同じ数値の言い換えだけで項目数を水増ししない
+- NSG、Defender、Advisor、特権ロールを横断し、該当データがある領域を優先する
+- 具体的なリソースを確認できないため、断定ではなく調査・是正の開始点として書く
+
+### 4. 30日アクションプラン
+
+- 「0〜7日」「8〜14日」「15〜30日」の3段階に分ける
+- 各アクションに担当ロール、実施内容、完了条件、根拠となる指標を含める
+- Security、IAM、Cloud Ops、Governanceなど、内容に適した担当ロールを割り当てる
+- まずHigh項目とOwner割り当てを確認し、その後に継続レビューへつなげる
+
+### 5. データ詳細
+
+- `riskSummary` の重大度別・カテゴリ別集計を表で示す
+- `governanceSummary` のリソースタイプ、ロールスコープ、プリンシパルタイプ別集計を表で示す
+- `topRiskSamples` を根拠一覧として示す
+
+### 6. 前提・制約
+
+- Azure 本番環境から取得したデータを匿名化・集約したレポートであることを明記する
+- 個別リソース名、リソースグループ、サブスクリプション、テナント、プリンシパル、ID、IPアドレスを含まないことを明記する
+- 集計値だけでは個別推奨事項の妥当性や対応可否を確定できないことを明記する
+
+## 表現とデザイン
+
+- 既存の総合レポートと同様に、白を基調とした業務向けの読みやすいレイアウトにする
+- ページ背景は淡いグレー、本文は白、見出しは濃紺、主要アクセントはAzure系の青とし、青一色にはしない
+- 優先度の意味色は「高＝赤」「中＝黄または琥珀」「低または良好＝緑」とし、十分なコントラストを確保する
+- ヘッダーは簡潔な濃紺の帯とし、巨大なタイトル、装飾的なグラデーション、背景画像は使わない
+- 見出し、KPIカード、表、優先度別のリスクカード、タイムラインを視覚的に区別する
+- KPIカードとリスクカードは角丸を8px以下にし、過度な影やカードの入れ子を避ける
+- 表は見出し行を濃紺または薄い青で区別し、行の交互色と十分なセル余白で読みやすくする
+- 色だけに依存せず、「高」「中」「低」などの文字でも優先度を示す
+- KPIカードを増やしすぎず、詳細な数値は全体サマリー表へ配置する
+- 長い段落を連続させず、1段落と短い箇条書きを組み合わせる
+- モバイルでも横にはみ出さないレスポンシブなCSSにする
+- 固定フッターや固定ヘッダーで本文を隠さない
 
 HTML を作成したら、`agent-output/azure-inventory-insights.html` を指定して
 `upload_artifact` Safe Output を1回だけ呼び出してください。成果物は承認待ちにせず、
