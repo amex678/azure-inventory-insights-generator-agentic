@@ -51,6 +51,7 @@ pre-agent-steps:
         Remove-Item -Recurse -Force
       New-Item -ItemType Directory -Path (Join-Path $env:GITHUB_WORKSPACE 'agent-output') -Force | Out-Null
       git init --initial-branch=main $env:GITHUB_WORKSPACE
+      git -C $env:GITHUB_WORKSPACE remote add origin "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY.git"
 
 post-steps:
   - name: Pages 公開用ファイルを準備
