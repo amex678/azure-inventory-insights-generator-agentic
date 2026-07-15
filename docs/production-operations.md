@@ -35,6 +35,7 @@ gh workflow run collect-azure-inventory-production.yml --repo amex678/azure-inve
 | Azure raw JSON / CSV | runner一時領域のみ | workflow内で削除 |
 | 匿名化済みAgent入力 | GitHub Actions Artifact | 1日 |
 | Agent生成HTML | GitHub Actions Artifact | 7日 |
+| gh-aw内部監査Artifact | GitHub Actions Artifact | フレームワーク既定（最大90日） |
 | 公開HTML | GitHub Pages | 次回成功デプロイまで |
 
 ## 障害対応
