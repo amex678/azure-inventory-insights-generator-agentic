@@ -137,6 +137,41 @@ VS Code + GitHub Copilot Chat 環境では、以下の prompt を使って一連
 > - AI 生成が失敗した場合は、既存のルールベース HTML 生成 (`New-AzComprehensiveAdminReport.ps1`) にフォールバックして処理を継続します。
 > - `azure-comprehensive-report.prompt.md` を seed として利用し、Agent 側で事実拘束ルールを適用します。
 
+## GitHub Agentic Workflows の試行
+
+[Azure 棚卸し分析ワークフロー](.github/workflows/azure-inventory-insights.md) は、既存の [公開ワークフロー](.github/workflows/azure-report-public.yml) と並行して評価する最小構成の PoC です。Azure には接続せず、匿名化 fixture から作った集約 JSON だけを Agent に渡します。生成する HTML は承認待ちにせず artifact に保存し、[Pages 公開ワークフロー](.github/workflows/publish-agentic-report-pages.yml) が GitHub Pages へ自動公開します。Git のファイルは更新しません。
+
+ローカルで匿名化と決定性を検証します。
+
+```powershell
+pwsh -NoProfile -File ./tests/Test-New-AzAgentInput.ps1
+```
+
+GitHub CLI と `gh-aw` extension を用意し、Markdown workflow から lock file を生成します。
+
+```powershell
+gh extension install github/gh-aw
+gh aw --version
+gh aw compile azure-inventory-insights --strict
+```
+
+`gh-aw` は `0.68.4` から `0.71.3` までのバージョンを使用しないでください。このリポジトリで検証したバージョンは `v0.81.6` です。compile 後の [GitHub Actions 実行用ファイル](.github/workflows/azure-inventory-insights.lock.yml) も、[人が編集する日本語のワークフロー](.github/workflows/azure-inventory-insights.md) と一緒にコミットします。
+
+初回実行前に、GitHub の `Settings` → `Pages` → `Build and deployment` → `Source` で `GitHub Actions` を選択してください。
+
+手動試行は GitHub の Actions 画面で `Azure 棚卸し分析サンプルレポート` を選び、`Run workflow` を実行します。処理が成功すると `Agentic レポートを GitHub Pages に公開` が自動起動し、[GitHub Pages のレポート](https://amex678.github.io/azure-inventory-insights-generator-agentic/) に公開します。artifact の保持期間は7日です。
+
+> 注意: GitHub Pages は1リポジトリにつき1サイトです。この PoC と既存の `azure-report-public.yml` の Pages デプロイを両方有効にすると、最後に成功したデプロイの内容がサイトに表示されます。
+
+この PoC の境界:
+
+- 入力は `tests/fixtures/agent-input/` の匿名化テストデータのみ
+- Agent 起動前に raw fixture と checkout 内容を削除
+- Agent に Azure 資格情報、OIDC、GitHub 書き込み権限を付与しない
+- Agent 自身には Pages 公開権限を与えず、成功後の専用 workflow だけが公開
+- スケジュール実行は行わない
+- Agent の出力先を `agent-output/azure-inventory-insights.html` に限定
+
 ## セキュリティと取り扱い上の注意
 
 - 生成物にはサブスクリプション ID、リソース ID、プリンシパル名、IP アドレス、NSG ルール、セキュリティ評価結果が含まれます。社外共有前に必ず確認してください。

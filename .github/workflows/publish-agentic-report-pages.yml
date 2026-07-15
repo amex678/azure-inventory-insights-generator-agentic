@@ -1,0 +1,57 @@
+name: Agentic レポートを GitHub Pages に公開
+
+on:
+  workflow_run:
+    workflows:
+      - Azure 棚卸し分析サンプルレポート
+    types:
+      - completed
+    branches:
+      - main
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  deploy-pages:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Agentic Workflow の Pages artifact をダウンロード
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: downloaded-pages
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Pages artifact を検証して展開
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f downloaded-pages/artifact.tar
+          mkdir -p _site
+          tar -xf downloaded-pages/artifact.tar -C _site
+          test -f _site/index.html
+
+      - name: この実行の Pages artifact をアップロード
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site/
+
+      - name: GitHub Pages に公開
+        id: deployment
+        uses: actions/deploy-pages@v4

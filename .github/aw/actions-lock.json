@@ -1,0 +1,19 @@
+{
+  "entries": {
+    "actions/deploy-pages@v4": {
+      "repo": "actions/deploy-pages",
+      "version": "v4",
+      "sha": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e"
+    },
+    "actions/upload-pages-artifact@v4": {
+      "repo": "actions/upload-pages-artifact",
+      "version": "v4",
+      "sha": "7b1f4a764d45c48632c6b24a0339c27f5614fb0b"
+    },
+    "github/gh-aw-actions/setup@v0.81.6": {
+      "repo": "github/gh-aw-actions/setup",
+      "version": "v0.81.6",
+      "sha": "ba6380cc6e5be5d21677bebe04d52fb48e3abec7"
+    }
+  }
+}
