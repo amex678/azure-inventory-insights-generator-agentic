@@ -3,7 +3,7 @@ name: Agentic レポートを GitHub Pages に公開
 on:
   workflow_run:
     workflows:
-      - Azure 棚卸し分析サンプルレポート
+      - Azure 棚卸し分析レポート（本番）
     types:
       - completed
     branches:

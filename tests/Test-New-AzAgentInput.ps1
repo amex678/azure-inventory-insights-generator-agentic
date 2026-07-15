@@ -15,12 +15,20 @@ function Assert-False([bool]$Condition, [string]$Message) {
     }
 }
 
+function Assert-True([bool]$Condition, [string]$Message) {
+    if (-not $Condition) {
+        throw $Message
+    }
+}
+
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $scriptPath = Join-Path $repositoryRoot 'scripts\New-AzAgentInput.ps1'
+$validationScriptPath = Join-Path $repositoryRoot 'scripts\Test-AzAgentInput.ps1'
 $fixturePath = Join-Path $PSScriptRoot 'fixtures\agent-input'
 $testDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "az-agent-input-test-$([guid]::NewGuid().ToString('N'))"
 $firstOutput = Join-Path $testDirectory 'first.json'
 $secondOutput = Join-Path $testDirectory 'second.json'
+$unsafeOutput = Join-Path $testDirectory 'unsafe.json'
 $generatedAt = '2026-07-15T00:00:00Z'
 
 try {
@@ -43,6 +51,8 @@ try {
     Assert-Equal 1 $summary.metrics.advisorHighImpactTotal 'Unexpected Advisor high-impact count.'
     Assert-False (@($summary.topRiskSamples).Count -gt 3) 'Risk samples exceed the configured maximum.'
 
+    & $validationScriptPath -InputPath $firstOutput
+
     $sensitivePatterns = [ordered]@{
         SubscriptionPath = '(?i)/subscriptions/'
         Guid = '(?i)\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b'
@@ -55,6 +65,17 @@ try {
     foreach ($pattern in $sensitivePatterns.GetEnumerator()) {
         Assert-False ($firstRaw -match $pattern.Value) "Sensitive pattern found in output: $($pattern.Key)."
     }
+
+    $summary | Add-Member -NotePropertyName leakedValue -NotePropertyValue '11111111-1111-4111-8111-111111111111'
+    $summary | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $unsafeOutput -Encoding UTF8
+    $unsafeRejected = $false
+    try {
+        & $validationScriptPath -InputPath $unsafeOutput
+    }
+    catch {
+        $unsafeRejected = $true
+    }
+    Assert-True $unsafeRejected 'Validation must reject input containing a GUID.'
 
     Write-Host 'New-AzAgentInput tests passed.'
 }

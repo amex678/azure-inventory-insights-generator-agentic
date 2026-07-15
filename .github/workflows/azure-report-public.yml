@@ -12,9 +12,6 @@ on:
           - auto
           - ai-only
           - rule-based
-  schedule:
-    # Production schedule: every 4 hours at minute 7 (UTC).
-    - cron: '7 */4 * * *'
 
 concurrency:
   group: azure-report-public-${{ github.ref }}

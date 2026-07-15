@@ -137,9 +137,42 @@ VS Code + GitHub Copilot Chat 環境では、以下の prompt を使って一連
 > - AI 生成が失敗した場合は、既存のルールベース HTML 生成 (`New-AzComprehensiveAdminReport.ps1`) にフォールバックして処理を継続します。
 > - `azure-comprehensive-report.prompt.md` を seed として利用し、Agent 側で事実拘束ルールを適用します。
 
-## GitHub Agentic Workflows の試行
+## GitHub Agentic Workflows の本番運用
 
-[Azure 棚卸し分析ワークフロー](.github/workflows/azure-inventory-insights.md) は、既存の [公開ワークフロー](.github/workflows/azure-report-public.yml) と並行して評価する最小構成の PoC です。Azure には接続せず、匿名化 fixture から作った集約 JSON だけを Agent に渡します。生成する HTML は承認待ちにせず artifact に保存し、[Pages 公開ワークフロー](.github/workflows/publish-agentic-report-pages.yml) が GitHub Pages へ自動公開します。Git のファイルは更新しません。
+本番経路は Azure 収集と AI 分析を別workflowへ分離しています。
+
+1. `Azure 棚卸しデータ収集（本番）` が毎日 06:07 JST に起動する
+2. Azure OIDC でログインし、5ドメインのrawデータをrunner内だけに収集する
+3. rawデータを匿名化・集約し、共通検証に合格した `inventory-summary.json` だけを1日保持する
+4. 成功した収集runを受けて `Azure 棚卸し分析レポート（本番）` が起動する
+5. Agentは匿名化済みJSONだけを読み、Safe OutputsでHTMLを生成する
+6. 専用workflowが検証済みPages artifactをGitHub Pagesへ公開する
+
+必要なRepository Secrets:
+
+- `AZURE_CLIENT_ID`
+- `AZURE_TENANT_ID`
+- `AZURE_SUBSCRIPTION_ID`
+
+Azure側では、GitHubの `main` ブランチに限定したFederated Credentialを使用します。Service Principalの権限は対象サブスクリプションの `Reader` と `Security Reader` だけです。クライアントシークレットは使用しません。
+
+手動実行はGitHubのActions画面で `Azure 棚卸しデータ収集（本番）` を選び、`Run workflow` を実行します。収集に成功すると、AI分析とPages公開が順番に自動起動します。詳細な監視・障害対応・ロールバックは [本番運用runbook](docs/production-operations.md) を参照してください。
+
+本番経路のセキュリティ境界:
+
+- Azure OIDCの `id-token: write` は収集workflowだけに付与
+- raw JSON / CSVはArtifact、Git、Pagesへ保存せず、匿名化後にrunnerから削除
+- Agent入力Artifactは匿名化済みJSON 1ファイルだけで、保持期間は1日
+- AgentにAzure資格情報、OIDC、GitHub書き込み権限を付与しない
+- Agent出力はSafe OutputsでHTML 1ファイル、最大1 MiB、保持期間7日に限定
+- Pagesへの書き込み権限は専用公開workflowだけに付与
+- 1runあたり100、24時間あたり300のAI Credits上限を設定
+
+旧 `.github/workflows/azure-report-public.yml` は手動フォールバックとして残しています。二重実行を避けるため定期スケジュールは無効です。
+
+## GitHub Agentic Workflows のサンプル試行
+
+[Azure 棚卸し分析サンプルワークフロー](.github/workflows/azure-inventory-insights.md) は、Azureへ接続せず匿名化fixtureだけでAgentの動作を確認する手動テストです。本番Pagesは更新しません。
 
 ローカルで匿名化と決定性を検証します。
 
@@ -159,7 +192,7 @@ gh aw compile azure-inventory-insights --strict
 
 初回実行前に、GitHub の `Settings` → `Pages` → `Build and deployment` → `Source` で `GitHub Actions` を選択してください。
 
-手動試行は GitHub の Actions 画面で `Azure 棚卸し分析サンプルレポート` を選び、`Run workflow` を実行します。処理が成功すると `Agentic レポートを GitHub Pages に公開` が自動起動し、[GitHub Pages のレポート](https://amex678.github.io/azure-inventory-insights-generator-agentic/) に公開します。artifact の保持期間は7日です。
+手動試行は GitHub の Actions 画面で `Azure 棚卸し分析サンプルレポート` を選び、`Run workflow` を実行します。生成HTMLはartifactとして7日間保持されます。
 
 > 注意: GitHub Pages は1リポジトリにつき1サイトです。この PoC と既存の `azure-report-public.yml` の Pages デプロイを両方有効にすると、最後に成功したデプロイの内容がサイトに表示されます。
 
@@ -169,7 +202,7 @@ gh aw compile azure-inventory-insights --strict
 - Agent 起動前に raw fixture と checkout 内容を削除
 - Agent に Azure 資格情報、OIDC、GitHub 書き込み権限を付与しない
 - Agent 自身には Pages 公開権限を与えず、成功後の専用 workflow だけが公開
-- スケジュール実行は行わない
+- スケジュール実行とPages公開は行わない
 - Agent の出力先を `agent-output/azure-inventory-insights.html` に限定
 
 ## セキュリティと取り扱い上の注意

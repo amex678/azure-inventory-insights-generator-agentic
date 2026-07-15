@@ -1,0 +1,77 @@
+name: Azure 棚卸しデータ収集（本番）
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 毎日 06:07 JST（前日 21:07 UTC）に実行する。
+    - cron: '7 21 * * *'
+
+concurrency:
+  group: azure-inventory-production-collection
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  collect-and-anonymize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Azure に OIDC ログイン
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: Az PowerShell モジュールをインストール
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
+          Install-Module -Name Az.Advisor -Scope CurrentUser -Repository PSGallery -Force
+
+      - name: Azure 棚卸しデータを収集
+        shell: pwsh
+        run: |
+          ./scripts/Export-AzResources.ps1
+          ./scripts/Export-AzRoleAssignments.ps1
+          ./scripts/Export-AzNsgRules.ps1
+          ./scripts/Export-AzDefenderRecommendations.ps1
+          ./scripts/Export-AzAdvisorRecommendations.ps1
+
+      - name: 匿名化した Agent 入力を生成して検証
+        shell: pwsh
+        run: |
+          $agentInputDirectory = Join-Path $env:RUNNER_TEMP 'azure-agent-input'
+          $agentInputPath = Join-Path $agentInputDirectory 'inventory-summary.json'
+
+          ./scripts/New-AzAgentInput.ps1 `
+            -InputDirectory ./output `
+            -OutputPath $agentInputPath `
+            -GeneratedAt ([datetimeoffset]::UtcNow) `
+            -MaxRiskSamples 5
+          ./scripts/Test-AzAgentInput.ps1 -InputPath $agentInputPath
+
+      - name: raw データを削除
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path -LiteralPath './output') {
+            Remove-Item -LiteralPath './output' -Recurse -Force
+          }
+
+      - name: 匿名化データだけをアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: azure-inventory-agent-input
+          path: ${{ runner.temp }}/azure-agent-input/inventory-summary.json
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
