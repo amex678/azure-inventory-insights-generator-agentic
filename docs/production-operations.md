@@ -45,8 +45,10 @@ gh workflow run collect-azure-inventory-production.yml --repo amex678/azure-inve
 2. EntraアプリのFederated Credentialが次のsubjectに限定されていることを確認する。
 
 ```text
-repo:amex678/azure-inventory-insights-generator-agentic:ref:refs/heads/main
+repo:amex678@280604931/azure-inventory-insights-generator-agentic@1301115013:ref:refs/heads/main
 ```
+
+GitHubのOIDC subject customizationにより、ownerとrepositoryは名前ではなくimmutable ID付きで発行されます。Actionsログの `AADSTS700213` に表示されるsubjectとFederated Credentialを完全一致させます。
 
 3. workflowが `main` ブランチから実行されていることを確認する。
 
