@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
   actions: read
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       actions: read
       pages: write
       id-token: write
@@ -30,6 +30,17 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 公開前に main へ同期
+        shell: bash
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+
       - name: Agentic Workflow の Pages artifact をダウンロード
         uses: actions/download-artifact@v4
         with:
@@ -46,6 +57,64 @@ jobs:
           mkdir -p _site
           tar -xf downloaded-pages/artifact.tar -C _site
           test -f _site/index.html
+
+      - name: レポートを latest/history に保存
+        shell: pwsh
+        env:
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          PUBLISH_RUN_ID: ${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          $runDate = Get-Date -Format 'yyyy-MM-dd'
+          $historyDir = Join-Path 'reports/history' $runDate
+          $latestDir = 'reports/latest'
+
+          New-Item -ItemType Directory -Path $historyDir -Force | Out-Null
+          New-Item -ItemType Directory -Path $latestDir -Force | Out-Null
+
+          Copy-Item -LiteralPath '_site/index.html' -Destination (Join-Path $historyDir 'comprehensive-report.html') -Force
+          Copy-Item -LiteralPath '_site/index.html' -Destination (Join-Path $latestDir 'comprehensive-report.html') -Force
+          Copy-Item -LiteralPath '_site/index.html' -Destination (Join-Path $latestDir 'index.html') -Force
+
+          $evidence = [ordered]@{
+            generation_method = 'agentic-workflow'
+            repository = $env:GITHUB_REPOSITORY
+            sourceRunId = $env:SOURCE_RUN_ID
+            sourceRunUrl = $env:SOURCE_RUN_URL
+            sourceHeadSha = $env:SOURCE_HEAD_SHA
+            publishRunId = $env:PUBLISH_RUN_ID
+            generatedAt = (Get-Date).ToString('o')
+          }
+
+          $evidence | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $historyDir 'report-evidence.json') -Encoding utf8
+          $evidence | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $latestDir 'report-evidence.json') -Encoding utf8
+
+      - name: レポートスナップショットをコミット
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f reports/
+          if git diff --cached --quiet; then
+            echo "No report changes to commit"
+            exit 0
+          fi
+          git commit -m "Publish Agentic Azure inventory report [skip ci]"
+
+          for attempt in 1 2 3; do
+            if git pull --rebase --autostash -X theirs origin main && git push; then
+              echo "Push succeeded on attempt ${attempt}"
+              exit 0
+            fi
+            git rebase --abort || true
+            echo "Push attempt ${attempt} failed; retrying..."
+            sleep 5
+          done
+
+          echo "Push failed after retries"
+          exit 1
 
       - name: この実行の Pages artifact をアップロード
         uses: actions/upload-pages-artifact@v4

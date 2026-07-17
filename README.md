@@ -100,42 +100,41 @@ VS Code + GitHub Copilot Chat 環境では、以下の prompt を使って一連
 
 ## GitHub Actions で Agentic Workflow 実行
 
-このリポジトリでは、PR を経由せず GitHub Actions 実行だけで Agentic Workflow による AI HTML レポート生成ができます。
+このリポジトリでは、パターンXのローカル実行フローをできる限り維持しながら、GitHub Actions上で GitHub Agentic Workflow による AI HTML レポート生成ができます。
 
-- ワークフロー: `.github/workflows/azure-report-public.yml`
-- AI 生成スクリプト: `scripts/New-AzComprehensiveAdminReportWithAgent.ps1`
-- 検証スクリプト: `scripts/Test-AzComprehensiveAdminReport.ps1`
-- 生成物:
-	- `output/comprehensive-report.html`
-	- `output/report-evidence.json`
-	- `reports/latest/comprehensive-report.html`
-	- `reports/history/{yyyy-MM-dd}/comprehensive-report.html`
+パターンXから変えないもの:
 
-ジョブ構成は以下です。
+- 既存のAzure棚卸し収集スクリプト
+- 既存の5ドメイン出力: `resources.json`, `rbac.json`, `nsg-rules.json`, `defender-recommendations.json`, `advisor-recommendations.json`
+- 生成HTML名: `comprehensive-report.html`
+- `reports/latest` / `reports/history` への保存
+- GitHub Pagesで最新HTMLを確認する運用
 
-1. `collect-data`: Azure の各種データを収集（resources/rbac/nsg/defender/advisor）
-2. `agent-generate-report`: prompt + compact JSON から AI で HTML を生成
-3. `validate-report`: 必須セクション・危険タグ・主要数値の整合性を検証
-4. `publish-report`: `reports/latest` / `reports/history` / Pages 用 `_site` を更新
+パターンAで追加するもの:
 
-必要な設定:
+- Azure収集workflow: `.github/workflows/collect-azure-inventory-production.yml`
+- Agentic Workflow: `.github/workflows/azure-inventory-production.md`
+- Actions実行用lock file: `.github/workflows/azure-inventory-production.lock.yml`
+- Agent入力生成: `scripts/New-AzAgentInput.ps1`
+- Agent入力検証: `scripts/Test-AzAgentInput.ps1`
+- Agent出力HTML検証: `scripts/Test-AzAgentReport.ps1`
+- Pages/reports公開workflow: `.github/workflows/publish-agentic-report-pages.yml`
 
-- Secret:
-	- `AI_REPORT_API_KEY`
-- Variable（任意）:
-	- `AI_REPORT_API_ENDPOINT`
-	- `AI_REPORT_MODEL`
-	- `ENABLE_GITHUB_PAGES`（`true` のときのみ Pages デプロイ）
+本番経路のジョブ構成は以下です。
 
-`workflow_dispatch` の `report_mode` で生成モードを選択できます。
+1. `collect-azure-inventory-production.yml`: Azure の各種データを収集し、匿名化済み `inventory-summary.json` だけをArtifact化
+2. `azure-inventory-production.lock.yml`: Agentic Workflow が `inventory-summary.json` だけを読み、AIでHTMLを生成
+3. `publish-agentic-report-pages.yml`: Agent出力を検証し、Pages公開と `reports/latest` / `reports/history/{yyyy-MM-dd}` への保存を実行
 
-- `auto`（既定）: AI を試行し、失敗または Secret 未設定時は rule-based にフォールバック
-- `ai-only`: AI 生成のみ実行。失敗時はジョブ失敗
-- `rule-based`: AI を使わず `New-AzComprehensiveAdminReport.ps1` のみ実行
+主な生成物:
 
-> 補足:
-> - AI 生成が失敗した場合は、既存のルールベース HTML 生成 (`New-AzComprehensiveAdminReport.ps1`) にフォールバックして処理を継続します。
-> - `azure-comprehensive-report.prompt.md` を seed として利用し、Agent 側で事実拘束ルールを適用します。
+- `reports/latest/comprehensive-report.html`
+- `reports/latest/index.html`
+- `reports/latest/report-evidence.json`
+- `reports/history/{yyyy-MM-dd}/comprehensive-report.html`
+- `reports/history/{yyyy-MM-dd}/report-evidence.json`
+
+`report-evidence.json` には `generation_method=agentic-workflow` と、元になったAgentic Workflow run IDを記録します。
 
 ## GitHub Agentic Workflows の本番運用
 
