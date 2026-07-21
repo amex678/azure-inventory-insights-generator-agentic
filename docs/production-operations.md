@@ -75,7 +75,7 @@ gh aw compile azure-inventory-production --strict
 
 ## ロールバック
 
-本番Agentic経路を一時停止する場合は、GitHub Actionsで `collect-azure-inventory-production.yml` を無効化します。レポートが必要な間は、旧 `azure-report-public.yml` を `rule-based` モードで手動実行できます。
+本番Agentic経路を一時停止する場合は、GitHub Actionsで `collect-azure-inventory-production.yml` を無効化します。最後に成功したPagesは維持されます。
 
 本番経路を再開するときは、収集workflowを有効化して手動実行し、3つのworkflowが順番に成功することを確認します。
 
