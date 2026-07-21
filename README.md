@@ -140,10 +140,10 @@ VS Code + GitHub Copilot Chat 環境では、以下の prompt を使って一連
 
 本番経路は Azure 収集と AI 分析を別workflowへ分離しています。
 
-1. `Azure 棚卸しデータ収集（本番）` が毎日 06:07 JST に起動する
+1. `Azure 棚卸しレポート - Agentic 1/3 収集` が毎日 06:07 JST に起動する
 2. Azure OIDC でログインし、5ドメインのrawデータをrunner内だけに収集する
 3. rawデータを匿名化・集約し、共通検証に合格した `inventory-summary.json` だけを1日保持する
-4. 成功した収集runを受けて `Azure 棚卸し分析レポート（本番）` が起動する
+4. 成功した収集runを受けて `Azure 棚卸しレポート - Agentic 2/3 分析` が起動する
 5. Agentは匿名化済みJSONだけを読み、Safe OutputsでHTMLを生成する
 6. 専用workflowが検証済みPages artifactをGitHub Pagesへ公開する
 
@@ -155,7 +155,7 @@ VS Code + GitHub Copilot Chat 環境では、以下の prompt を使って一連
 
 Azure側では、GitHubの `main` ブランチに限定したFederated Credentialを使用します。Service Principalの権限は対象サブスクリプションの `Reader` と `Security Reader` だけです。クライアントシークレットは使用しません。
 
-手動実行はGitHubのActions画面で `Azure 棚卸しデータ収集（本番）` を選び、`Run workflow` を実行します。収集に成功すると、AI分析とPages公開が順番に自動起動します。詳細な監視・障害対応・ロールバックは [本番運用runbook](docs/production-operations.md) を参照してください。
+手動実行はGitHubのActions画面で `Azure 棚卸しレポート - Agentic 1/3 収集` を選び、`Run workflow` を実行します。収集に成功すると、AI分析とPages公開が順番に自動起動します。詳細な監視・障害対応・ロールバックは [本番運用runbook](docs/production-operations.md) を参照してください。
 
 本番経路のセキュリティ境界:
 
@@ -191,7 +191,7 @@ gh aw compile azure-inventory-insights --strict
 
 初回実行前に、GitHub の `Settings` → `Pages` → `Build and deployment` → `Source` で `GitHub Actions` を選択してください。
 
-手動試行は GitHub の Actions 画面で `Azure 棚卸し分析サンプルレポート` を選び、`Run workflow` を実行します。生成HTMLはartifactとして7日間保持されます。
+手動試行は GitHub の Actions 画面で `Azure 棚卸しレポート - Agentic サンプル` を選び、`Run workflow` を実行します。生成HTMLはartifactとして7日間保持されます。
 
 > 注意: GitHub Pages は1リポジトリにつき1サイトです。この PoC と既存の `azure-report-public.yml` の Pages デプロイを両方有効にすると、最後に成功したデプロイの内容がサイトに表示されます。
 

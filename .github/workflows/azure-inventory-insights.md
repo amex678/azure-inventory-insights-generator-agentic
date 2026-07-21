@@ -83,7 +83,7 @@ safe-outputs:
       - "agent-output/azure-inventory-insights.html"
 ---
 
-# Azure 棚卸し分析サンプルレポート
+# Azure 棚卸しレポート - Agentic サンプル
 
 `/tmp/gh-aw/agent/inventory-summary.json` にある匿名化済み集計データだけを使い、
 簡潔な日本語の HTML レポートを作成してください。

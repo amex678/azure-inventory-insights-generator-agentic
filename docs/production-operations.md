@@ -4,15 +4,15 @@
 
 本番処理は毎日 06:07 JST に自動実行されます。通常は次の3つのworkflowが順番に成功することを確認します。
 
-1. `Azure 棚卸しデータ収集（本番）`
-2. `Azure 棚卸し分析レポート（本番）`
-3. `Agentic レポートを GitHub Pages に公開`
+1. `Azure 棚卸しレポート - Agentic 1/3 収集`
+2. `Azure 棚卸しレポート - Agentic 2/3 分析`
+3. `Azure 棚卸しレポート - Agentic 3/3 公開`
 
 公開先は <https://amex678.github.io/azure-inventory-insights-generator-agentic/> です。
 
 ## 手動実行
 
-Actions画面で `Azure 棚卸しデータ収集（本番）` を開き、`Run workflow` を実行します。後続workflowを個別に手動実行する必要はありません。
+Actions画面で `Azure 棚卸しレポート - Agentic 1/3 収集` を開き、`Run workflow` を実行します。後続workflowを個別に手動実行する必要はありません。
 
 CLIで実行する場合:
 

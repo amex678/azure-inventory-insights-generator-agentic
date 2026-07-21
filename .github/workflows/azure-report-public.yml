@@ -1,4 +1,4 @@
-name: Azure Inventory Report - Public OIDC
+name: Azure 棚卸しレポート - 旧方式フォールバック
 
 on:
   workflow_dispatch:
