@@ -3,427 +3,386 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Azure 棚卸しレポート — インベントリ洞察</title>
+<title>Azure 棚卸し インサイトレポート</title>
 <style>
-/* ===== Reset & Base ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: "Segoe UI", "Noto Sans JP", sans-serif;
-  font-size: 15px;
-  line-height: 1.7;
-  background: #f0f2f5;
-  color: #222;
-}
-a { color: #0078d4; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    background: #f0f2f5;
+    color: #1a1a2e;
+  }
+  a { color: inherit; text-decoration: none; }
 
-/* ===== Layout ===== */
-.page-wrapper {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 16px 48px;
-}
+  /* Header */
+  .site-header {
+    background: #0f2547;
+    color: #fff;
+    padding: 18px 32px 14px;
+  }
+  .site-header h1 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  .site-header .meta {
+    font-size: 0.78rem;
+    color: #a0b4cc;
+    margin-top: 4px;
+  }
+  .notice-bar {
+    background: #e8f0fe;
+    border-left: 4px solid #1967d2;
+    font-size: 0.78rem;
+    color: #174ea6;
+    padding: 8px 32px;
+  }
 
-/* ===== Header ===== */
-.site-header {
-  background: #1a2340;
-  color: #fff;
-  padding: 18px 32px;
-  margin-bottom: 0;
-}
-.site-header h1 {
-  font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-.site-header .subtitle {
-  font-size: 0.85rem;
-  color: #a8bcda;
-  margin-top: 2px;
-}
+  /* Layout */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+  }
 
-/* ===== Meta bar ===== */
-.meta-bar {
-  background: #fff;
-  border-bottom: 3px solid #0078d4;
-  padding: 10px 32px;
-  font-size: 0.82rem;
-  color: #555;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-.meta-bar strong { color: #1a2340; }
+  /* Section */
+  section { margin-bottom: 40px; }
+  h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f2547;
+    border-bottom: 2px solid #1967d2;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+  }
+  h3 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1a2f5e;
+    margin: 18px 0 10px;
+  }
 
-/* ===== Notice ===== */
-.notice {
-  background: #e8f0fe;
-  border-left: 4px solid #0078d4;
-  padding: 10px 16px;
-  border-radius: 0 4px 4px 0;
-  font-size: 0.83rem;
-  color: #1a2340;
-  margin-bottom: 24px;
-}
+  /* KPI Cards */
+  .kpi-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: #fff;
+    border: 1px solid #d6e0f0;
+    border-radius: 7px;
+    padding: 14px 20px;
+    min-width: 160px;
+    flex: 1 1 160px;
+    max-width: 220px;
+  }
+  .kpi-card .label {
+    font-size: 0.72rem;
+    color: #5f6b7c;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .kpi-card .value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .kpi-card .sub {
+    font-size: 0.72rem;
+    color: #5f6b7c;
+    margin-top: 2px;
+  }
+  .kpi-red   { border-top: 3px solid #c5221f; }
+  .kpi-red   .value { color: #c5221f; }
+  .kpi-amber { border-top: 3px solid #b45309; }
+  .kpi-amber .value { color: #b45309; }
+  .kpi-green { border-top: 3px solid #137333; }
+  .kpi-green .value { color: #137333; }
+  .kpi-blue  { border-top: 3px solid #1967d2; }
+  .kpi-blue  .value { color: #1967d2; }
 
-/* ===== Section ===== */
-.section {
-  background: #fff;
-  border-radius: 6px;
-  padding: 28px 32px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
-.section h2 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1a2340;
-  border-bottom: 2px solid #0078d4;
-  padding-bottom: 8px;
-  margin-bottom: 20px;
-}
+  /* Summary text */
+  .summary-box {
+    background: #fff;
+    border: 1px solid #d6e0f0;
+    border-radius: 7px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+  }
+  .summary-box p { margin-bottom: 10px; }
+  .summary-box p:last-child { margin-bottom: 0; }
 
-/* ===== KPI Cards ===== */
-.kpi-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 24px;
-}
-.kpi-card {
-  flex: 1 1 160px;
-  border: 1px solid #dde3ee;
-  border-radius: 6px;
-  padding: 14px 18px;
-  background: #fafbfc;
-  min-width: 140px;
-}
-.kpi-card .kpi-label {
-  font-size: 0.76rem;
-  color: #556;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 4px;
-}
-.kpi-card .kpi-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1a2340;
-  line-height: 1.1;
-}
-.kpi-card .kpi-note {
-  font-size: 0.75rem;
-  color: #778;
-  margin-top: 4px;
-}
-.kpi-card.kpi-red   { border-top: 4px solid #c0392b; }
-.kpi-card.kpi-amber { border-top: 4px solid #d4870a; }
-.kpi-card.kpi-blue  { border-top: 4px solid #0078d4; }
-.kpi-card.kpi-green { border-top: 4px solid #217a3c; }
+  /* Concern / Strength lists */
+  .concern-list, .strength-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .concern-list li, .strength-list li {
+    background: #fff;
+    border: 1px solid #d6e0f0;
+    border-radius: 7px;
+    padding: 12px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .concern-list li { border-left: 4px solid #c5221f; }
+  .strength-list li { border-left: 4px solid #137333; }
+  .badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .badge-red    { background: #fce8e6; color: #c5221f; }
+  .badge-amber  { background: #fef3c7; color: #92400e; }
+  .badge-green  { background: #e6f4ea; color: #137333; }
+  .badge-blue   { background: #e8f0fe; color: #1967d2; }
 
-/* ===== Prose ===== */
-.overview-text {
-  background: #f5f7fa;
-  border-left: 4px solid #0078d4;
-  border-radius: 0 4px 4px 0;
-  padding: 14px 18px;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-  color: #1a2340;
-}
+  /* Tables */
+  .tbl-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 7px;
+    overflow: hidden;
+    font-size: 0.85rem;
+    margin-bottom: 18px;
+  }
+  thead tr { background: #0f2547; color: #fff; }
+  thead th { padding: 10px 14px; text-align: left; font-weight: 600; font-size: 0.8rem; }
+  tbody tr:nth-child(even) { background: #f7f9fc; }
+  tbody td { padding: 9px 14px; border-bottom: 1px solid #e4eaf3; vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
 
-/* ===== Two-column lists ===== */
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 8px;
-}
-@media (max-width: 680px) {
-  .two-col { grid-template-columns: 1fr; }
-}
-.list-box {
-  background: #f9fafb;
-  border: 1px solid #dde3ee;
-  border-radius: 6px;
-  padding: 14px 18px;
-}
-.list-box h3 {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #1a2340;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #dde3ee;
-  padding-bottom: 6px;
-}
-.list-box ul {
-  list-style: none;
-  padding: 0;
-}
-.list-box ul li {
-  font-size: 0.85rem;
-  padding: 5px 0 5px 16px;
-  border-bottom: 1px solid #eef0f3;
-  position: relative;
-}
-.list-box ul li::before {
-  content: "▸";
-  position: absolute;
-  left: 0;
-  color: #0078d4;
-}
-.list-box ul li:last-child { border-bottom: none; }
-.list-box ul li .meta {
-  display: block;
-  font-size: 0.76rem;
-  color: #778;
-  margin-top: 2px;
-}
+  /* Priority badges in tables */
+  .p-high   { color: #c5221f; font-weight: 700; }
+  .p-medium { color: #92400e; font-weight: 700; }
+  .p-low    { color: #137333; font-weight: 700; }
+  .eval-required  { color: #c5221f; font-weight: 600; }
+  .eval-confirm   { color: #b45309; font-weight: 600; }
+  .eval-good      { color: #137333; font-weight: 600; }
 
-/* ===== Tables ===== */
-.tbl-wrap { overflow-x: auto; margin-top: 8px; }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-}
-thead th {
-  background: #1a2340;
-  color: #fff;
-  padding: 9px 12px;
-  text-align: left;
-  font-weight: 600;
-}
-tbody tr:nth-child(odd)  { background: #f7f9fc; }
-tbody tr:nth-child(even) { background: #fff; }
-tbody td {
-  padding: 8px 12px;
-  border-bottom: 1px solid #e8ecf2;
-  vertical-align: top;
-}
-.badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-.badge-red    { background: #fde8e8; color: #c0392b; }
-.badge-amber  { background: #fef3cd; color: #875400; }
-.badge-green  { background: #e3f5e9; color: #1a6830; }
-.badge-blue   { background: #ddeeff; color: #005fa3; }
-.badge-grey   { background: #eee; color: #555; }
+  /* Risk Cards */
+  .risk-cards { display: flex; flex-direction: column; gap: 14px; }
+  .risk-card {
+    background: #fff;
+    border: 1px solid #d6e0f0;
+    border-radius: 7px;
+    padding: 16px 20px;
+  }
+  .risk-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .risk-num {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f2547;
+    min-width: 22px;
+  }
+  .risk-title { font-size: 0.92rem; font-weight: 600; color: #1a2f5e; }
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px 20px;
+    font-size: 0.82rem;
+  }
+  .risk-grid dt { color: #5f6b7c; font-weight: 600; margin-bottom: 2px; }
+  .risk-grid dd { margin-left: 0; color: #1a1a2e; }
 
-/* ===== Risk Cards ===== */
-.risk-list { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
-.risk-card {
-  border: 1px solid #dde3ee;
-  border-radius: 6px;
-  overflow: hidden;
-}
-.risk-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  background: #f2f4f8;
-  border-bottom: 1px solid #dde3ee;
-}
-.risk-card-header .rank {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #1a2340;
-  min-width: 28px;
-}
-.risk-card-header .risk-title {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #1a2340;
-  flex: 1;
-}
-.risk-card-body {
-  padding: 12px 16px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 24px;
-  font-size: 0.84rem;
-}
-@media (max-width: 600px) {
-  .risk-card-body { grid-template-columns: 1fr; }
-}
-.risk-card-body .field label {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #778;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 2px;
-}
-.risk-card-body .field p { color: #222; }
+  /* Action Plan */
+  .action-phases { display: flex; flex-direction: column; gap: 16px; }
+  .phase-card {
+    background: #fff;
+    border: 1px solid #d6e0f0;
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .phase-header {
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: #fff;
+  }
+  .phase-header.ph-1 { background: #c5221f; }
+  .phase-header.ph-2 { background: #b45309; }
+  .phase-header.ph-3 { background: #1967d2; }
+  .phase-body { padding: 14px 18px; }
+  .action-item {
+    border-bottom: 1px solid #e4eaf3;
+    padding: 10px 0;
+  }
+  .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .action-item .a-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 4px; }
+  .action-item .a-meta {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    font-size: 0.78rem; color: #5f6b7c; margin-top: 4px;
+  }
+  .a-meta span::before { content: "◆ "; }
 
-/* ===== Timeline ===== */
-.timeline { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
-.tl-phase {
-  border-left: 3px solid #0078d4;
-  margin-left: 12px;
-  padding-left: 20px;
-  padding-bottom: 20px;
-  position: relative;
-}
-.tl-phase::before {
-  content: "";
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #0078d4;
-  border: 2px solid #fff;
-  position: absolute;
-  left: -8px;
-  top: 3px;
-}
-.tl-phase:last-child { padding-bottom: 0; }
-.tl-phase .tl-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #fff;
-  background: #0078d4;
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 3px;
-  margin-bottom: 10px;
-}
-.action-table table { font-size: 0.82rem; }
-.action-table thead th { background: #2b3f6c; }
+  /* Footer */
+  .report-footer {
+    text-align: center;
+    font-size: 0.72rem;
+    color: #8a9ab5;
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid #d6e0f0;
+  }
 
-/* ===== Footer ===== */
-.page-footer {
-  text-align: center;
-  font-size: 0.78rem;
-  color: #889;
-  padding-top: 16px;
-  border-top: 1px solid #dde3ee;
-  margin-top: 8px;
-}
+  @media (max-width: 640px) {
+    .kpi-card { max-width: 100%; }
+    .risk-grid { grid-template-columns: 1fr; }
+    .site-header { padding: 14px 16px 10px; }
+    .container { padding: 16px 12px 40px; }
+    .notice-bar { padding: 8px 16px; }
+  }
 </style>
 </head>
 <body>
+<nav data-repository-link="true" aria-label="リポジトリ" style="display:flex;justify-content:flex-end;align-items:center;padding:10px clamp(16px,4vw,32px);background:#fff;border-bottom:1px solid #d0d7de;font-family:&quot;Segoe UI&quot;,&quot;Meiryo&quot;,sans-serif;font-size:14px;line-height:1.5;">
+  <a href="https://github.com/amex678/azure-inventory-insights-generator-agentic" target="_blank" rel="noopener noreferrer" style="color:#0969da;text-decoration:underline;text-underline-offset:3px;">GitHub リポジトリ</a>
+</nav>
 
 <header class="site-header">
-  <h1>Azure 棚卸しレポート — インベントリ洞察</h1>
-  <div class="subtitle">Agentic 分析フェーズ 2/3 ｜ 匿名化・集計済みデータに基づく</div>
+  <h1>Azure 棚卸し インサイトレポート</h1>
+  <div class="meta">生成日時: 2026年7月23日 22:14 UTC　|　Agentic フェーズ 2/3 分析</div>
 </header>
-
-<div class="meta-bar">
-  <span><strong>レポート生成日時：</strong> 2026-07-22 22:18 UTC</span>
-  <span><strong>データ取得日時：</strong> 2026-07-22T22:16:20Z</span>
-  <span><strong>スキーマバージョン：</strong> 1.0</span>
-  <span><strong>対象リソース数：</strong> 89</span>
+<div class="notice-bar">
+  本レポートは匿名化・集計済みデータのみを使用しています。個別リソース名・IDは含まれません。集計値のみでは個別推奨の妥当性を確定できないため、実環境での追加確認が必要です。
 </div>
 
-<div class="page-wrapper">
-
-  <div class="notice">
-    ⚠ このレポートは Azure 本番環境から取得したデータを匿名化・集計したものです。個別のリソース名・リソースグループ・サブスクリプション・テナント・プリンシパル・ID・IP アドレスは含まれません。集計値のみに基づくため、個別推奨事項の妥当性や対応可否は現地確認が必要です。
-  </div>
+<div class="container">
 
   <!-- ===== 1. エグゼクティブサマリー ===== -->
-  <section class="section">
+  <section id="exec-summary">
     <h2>1. エグゼクティブサマリー</h2>
 
-    <div class="kpi-row">
+    <div class="kpi-grid">
       <div class="kpi-card kpi-blue">
-        <div class="kpi-label">リソース総数</div>
-        <div class="kpi-value">89</div>
-        <div class="kpi-note">5領域すべて取得済み</div>
+        <div class="label">リソース総数</div>
+        <div class="value">89</div>
+        <div class="sub">取得済み全リソース</div>
       </div>
       <div class="kpi-card kpi-red">
-        <div class="kpi-label">Defender High</div>
-        <div class="kpi-value">79</div>
-        <div class="kpi-note">全推奨事項 514 件中</div>
+        <div class="label">Defender High</div>
+        <div class="value">72</div>
+        <div class="sub">重大度：高の推奨事項</div>
       </div>
       <div class="kpi-card kpi-amber">
-        <div class="kpi-label">Advisor High Impact</div>
-        <div class="kpi-value">81</div>
-        <div class="kpi-note">全推奨事項 236 件中</div>
+        <div class="label">Advisor High Impact</div>
+        <div class="value">81</div>
+        <div class="sub">高影響度の推奨事項</div>
       </div>
       <div class="kpi-card kpi-amber">
-        <div class="kpi-label">Owner 割り当て</div>
-        <div class="kpi-value">13</div>
-        <div class="kpi-note">ロール割り当て全 43 件中</div>
+        <div class="label">Owner 割り当て</div>
+        <div class="value">13</div>
+        <div class="sub">ロール割り当て 43 件中</div>
       </div>
       <div class="kpi-card kpi-green">
-        <div class="kpi-label">危険な NSG ルール</div>
-        <div class="kpi-value">0</div>
-        <div class="kpi-note">NSG ルール全 12 件中</div>
+        <div class="label">危険な NSG ルール</div>
+        <div class="value">0</div>
+        <div class="sub">12 ルール評価済み</div>
       </div>
     </div>
 
-    <div class="overview-text">
-      <strong>【総評】</strong>
-      本環境は 89 リソースと比較的コンパクトな規模だが、Defender が 514 件・Advisor が 236 件の推奨事項を検出しており、そのうち未対応（Unhealthy）は 275 件に達する。最大のリスク集中領域は仮想マシン（VM）で、ソフトウェア更新・セキュリティ設定の両面で High 件数が突出している。NSG の危険ルールがゼロである点は公開境界の統制として評価できる一方、Owner ロール割り当てが 13 件あり、特権境界の継続的なレビューが求められる。サービスプリンシパルがロール割り当ての約 91% を占める運用実態についても、意図的な設計かどうかの確認が必要である。
+    <div class="summary-box">
+      <p><strong>総評</strong></p>
+      <p>
+        89 リソースを持つ中規模の Azure 環境において、Defender が 452 件の推奨事項を検出し、そのうち 72 件が High、213 件が不健全状態と分類されています。
+        Advisor でも High Impact が 81 件（Security カテゴリ 161 件）確認されており、<strong>仮想マシン周辺のソフトウェア更新不足とセキュリティ設定</strong>がリスクの最大集中領域です。
+        特権境界では Owner ロールが 13 件（全割り当て 43 件の約 30%）存在し、割り当てスコープの確認が必要です。
+        一方、NSG 危険ルールが 0 件であることは公開境界の管理が一定水準にあることを示します。
+        サブスクリプション・管理グループレベルの ServicePrincipal 割り当て比率については追加確認が必要です。
+      </p>
     </div>
 
-    <div class="two-col">
-      <div class="list-box">
-        <h3>🔴 主要懸念事項（3〜5件）</h3>
-        <ul>
-          <li>
-            <strong>VM のソフトウェア更新未適用（推定）</strong>
-            <span class="meta">根拠: Defender High・SoftwareUpdate カテゴリ 65 件（VM）。更新未適用 VM が存在する可能性が高く、既知の脆弱性を放置するリスクがある。早急な棚卸し・パッチ計画が必要。</span>
-          </li>
-          <li>
-            <strong>VM に対する Advisor Security 勧告（High）40 件</strong>
-            <span class="meta">根拠: Advisor High・Security カテゴリ 40 件（VM）。セキュリティ設定の不備が複数 VM にわたると示唆される。影響範囲と優先順位の確認が必要。</span>
-          </li>
-          <li>
-            <strong>Defender 未対応推奨 275 件（うち High 79 件）</strong>
-            <span class="meta">根拠: defenderUnhealthyTotal 275。Unhealthy 率が 53% を超えており、セキュリティ態勢スコアへの下押し要因が多い。</span>
-          </li>
-          <li>
-            <strong>ディスクの高可用性に関する Advisor High 11 件</strong>
-            <span class="meta">根拠: Advisor High・HighAvailability カテゴリ 11 件（ディスク）。可用性設計の見直しが必要な可能性があり、業務継続性に影響し得る。</span>
-          </li>
-          <li>
-            <strong>Owner ロール割り当て 13 件の棚卸し</strong>
-            <span class="meta">根拠: ownerAssignmentTotal 13。最小権限原則の観点から、Owner 権限の正当性を定期確認する必要がある。</span>
-          </li>
-        </ul>
-      </div>
+    <h3>主要懸念事項</h3>
+    <ul class="concern-list">
+      <li>
+        <span class="badge badge-red">高</span>
+        <div>
+          <strong>仮想マシンのソフトウェア更新未適用（推定 58 件）</strong><br>
+          Defender High × SoftwareUpdate の組み合わせが最多（58 件）。パッチ未適用 VM はランサムウェア・横移動のリスクが高く、環境全体への影響波及が懸念される。早急な更新適用またはリスク受容判断が必要。
+        </div>
+      </li>
+      <li>
+        <span class="badge badge-red">高</span>
+        <div>
+          <strong>Advisor Security カテゴリの High Impact 推奨事項（40 件、VM 対象）</strong><br>
+          仮想マシンを対象とした Advisor High × Security が 40 件確認される。Defender の指摘と重複する可能性があるが、セキュリティ構成の改善を促す独立した指摘として調査が必要。
+        </div>
+      </li>
+      <li>
+        <span class="badge badge-red">高</span>
+        <div>
+          <strong>Defender 不健全推奨事項が 213 件（全体の約 47%）</strong><br>
+          不健全状態が推奨事項総数の半数近くに達している。カテゴリ「Unknown」が 76 件含まれており、分類不明の項目も多く、詳細調査なしには対応優先度の判断が困難。
+        </div>
+      </li>
+      <li>
+        <span class="badge badge-amber">中</span>
+        <div>
+          <strong>Owner ロール割り当て 13 件の妥当性未確認</strong><br>
+          ロール割り当て 43 件中 13 件が Owner 権限。Owner はリソース削除・ポリシー変更を含む最上位権限であり、割り当て範囲（サブスクリプション/管理グループ）と最小権限原則の観点から棚卸しが必要。
+        </div>
+      </li>
+      <li>
+        <span class="badge badge-amber">中</span>
+        <div>
+          <strong>高可用性 High Impact ディスク 11 件・VM 運用改善 11 件</strong><br>
+          Advisor がディスクの可用性設定と VM の運用改善をそれぞれ 11 件指摘。障害発生時の影響範囲が拡大するリスクがあり、設計レビューを推奨。
+        </div>
+      </li>
+    </ul>
 
-      <div class="list-box">
-        <h3>🟢 強み・確認できた統制</h3>
-        <ul>
-          <li>
-            <strong>危険な NSG ルール：0 件</strong>
-            <span class="meta">公開境界の NSG 設定において、現時点で集計ツールが検出した危険なルールはゼロ。ネットワーク境界の基本統制が機能していることを示す。</span>
-          </li>
-          <li>
-            <strong>5つ全データ領域の取得成功</strong>
-            <span class="meta">リソース・RBAC・NSG・Defender・Advisor の全領域で棚卸しデータが取得できており、可視化の基盤が整っている。</span>
-          </li>
-          <li>
-            <strong>ロール割り当ての大半がサービスプリンシパル</strong>
-            <span class="meta">43 件中 39 件（91%）がサービスプリンシパル。ユーザー直接割り当てが限定的であることは、自動化・管理性の観点で肯定的に評価できる（意図的設計の確認は必要）。</span>
-          </li>
-          <li>
-            <strong>Advisor コスト勧告がほぼゼロ</strong>
-            <span class="meta">コスト改善の Advisor 勧告は 1 件のみであり、コスト最適化の観点では現状の構成が比較的効率的である可能性がある（追加確認が必要）。</span>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <h3>強み・確認できた統制</h3>
+    <ul class="strength-list">
+      <li>
+        <span class="badge badge-green">良好</span>
+        <div>
+          <strong>NSG 危険ルール 0 件</strong><br>
+          12 件の NSG ルールを評価した結果、危険と判定されたルールは 0 件。ネットワーク境界の基本統制が機能していることが確認できる。
+        </div>
+      </li>
+      <li>
+        <span class="badge badge-green">良好</span>
+        <div>
+          <strong>全5データ領域の取得完了</strong><br>
+          リソース・RBAC・NSG・Defender・Advisor のすべてのデータ領域が取得済み。棚卸しの可視性が確保されており、以降のリスク評価の基盤が整っている。
+        </div>
+      </li>
+      <li>
+        <span class="badge badge-blue">参考</span>
+        <div>
+          <strong>ServicePrincipal 中心のロール設計（39/43 件）</strong><br>
+          ロール割り当ての 91% が ServicePrincipal であり、人的アカウントへの直接割り当てが限定的。自動化・管理用途での設計が推測されるが、各 SP の権限スコープは別途確認が必要。
+        </div>
+      </li>
+    </ul>
   </section>
 
   <!-- ===== 2. 全体サマリー表 ===== -->
-  <section class="section">
+  <section id="overall-summary">
     <h2>2. 全体サマリー表</h2>
     <div class="tbl-wrap">
       <table>
         <thead>
           <tr>
-            <th>ドメイン</th>
+            <th>データ領域</th>
             <th>指標</th>
             <th>値</th>
             <th>評価</th>
@@ -434,73 +393,61 @@ tbody td {
             <td>リソース</td>
             <td>リソース総数</td>
             <td>89</td>
-            <td><span class="badge badge-blue">取得済み</span></td>
+            <td class="eval-good">取得済み</td>
           </tr>
           <tr>
             <td>RBAC</td>
             <td>ロール割り当て総数</td>
             <td>43</td>
-            <td><span class="badge badge-blue">取得済み</span></td>
+            <td class="eval-confirm">要確認</td>
           </tr>
           <tr>
             <td>RBAC</td>
-            <td>Owner 割り当て数</td>
+            <td>Owner ロール割り当て数</td>
             <td>13</td>
-            <td><span class="badge badge-amber">要確認</span></td>
+            <td class="eval-confirm">要確認</td>
           </tr>
           <tr>
             <td>NSG</td>
             <td>NSG ルール総数</td>
             <td>12</td>
-            <td><span class="badge badge-blue">取得済み</span></td>
+            <td class="eval-good">取得済み</td>
           </tr>
           <tr>
             <td>NSG</td>
             <td>危険な NSG ルール数</td>
             <td>0</td>
-            <td><span class="badge badge-green">良好</span></td>
+            <td class="eval-good">良好</td>
           </tr>
           <tr>
             <td>Defender</td>
             <td>推奨事項総数</td>
-            <td>514</td>
-            <td><span class="badge badge-blue">取得済み</span></td>
+            <td>452</td>
+            <td class="eval-required">要対応</td>
           </tr>
           <tr>
             <td>Defender</td>
-            <td>Unhealthy（未対応）件数</td>
-            <td>275</td>
-            <td><span class="badge badge-red">要対応</span></td>
+            <td>不健全状態の推奨事項数</td>
+            <td>213</td>
+            <td class="eval-required">要対応</td>
           </tr>
           <tr>
             <td>Defender</td>
-            <td>High 重大度件数</td>
-            <td>79</td>
-            <td><span class="badge badge-red">要対応</span></td>
+            <td>High 重大度 推奨事項数</td>
+            <td>72</td>
+            <td class="eval-required">要対応</td>
           </tr>
           <tr>
             <td>Advisor</td>
             <td>推奨事項総数</td>
             <td>236</td>
-            <td><span class="badge badge-blue">取得済み</span></td>
+            <td class="eval-confirm">要確認</td>
           </tr>
           <tr>
             <td>Advisor</td>
-            <td>High Impact 件数</td>
+            <td>High Impact 推奨事項数</td>
             <td>81</td>
-            <td><span class="badge badge-red">要対応</span></td>
-          </tr>
-          <tr>
-            <td>Advisor</td>
-            <td>Security カテゴリ件数</td>
-            <td>161</td>
-            <td><span class="badge badge-amber">要確認</span></td>
-          </tr>
-          <tr>
-            <td>Advisor</td>
-            <td>HighAvailability カテゴリ件数</td>
-            <td>52</td>
-            <td><span class="badge badge-amber">要確認</span></td>
+            <td class="eval-required">要対応</td>
           </tr>
         </tbody>
       </table>
@@ -508,230 +455,224 @@ tbody td {
   </section>
 
   <!-- ===== 3. 潜在リスク Top 5 ===== -->
-  <section class="section">
+  <section id="top-risks">
     <h2>3. 潜在リスク Top 5</h2>
-    <div class="risk-list">
+    <div class="risk-cards">
 
       <div class="risk-card">
         <div class="risk-card-header">
-          <span class="rank">1</span>
-          <span class="risk-title">VM のソフトウェア更新未適用（Defender High · SoftwareUpdate）</span>
+          <span class="risk-num">1</span>
           <span class="badge badge-red">優先度：高</span>
+          <span class="risk-title">VM ソフトウェア更新未適用（Defender High / SoftwareUpdate）</span>
         </div>
-        <div class="risk-card-body">
-          <div class="field">
-            <label>観察事実</label>
-            <p>Defender が VM（Microsoft.Compute/virtualMachines）に対してソフトウェア更新カテゴリの High 推奨事項を 65 件検出している。これは Defender High 全体（79 件）の約 82% を占める。</p>
+        <dl class="risk-grid">
+          <div>
+            <dt>観察事実</dt>
+            <dd>Defender が Microsoft.Compute/virtualMachines に対して High 重大度 × SoftwareUpdate カテゴリの推奨を 58 件検出</dd>
           </div>
-          <div class="field">
-            <label>影響</label>
-            <p>更新未適用の VM が存在する場合、公知の脆弱性を突いた攻撃の足がかりになり得る。横展開リスクおよびデータ漏洩・サービス停止につながる可能性がある。</p>
+          <div>
+            <dt>影響</dt>
+            <dd>パッチ未適用 VM は既知の脆弱性を抱えたまま稼働している可能性があり、侵害の起点となるリスクがある</dd>
           </div>
-          <div class="field" style="grid-column: 1 / -1;">
-            <label>推奨対応</label>
-            <p>対象 VM を特定し、パッチ適用状況を Azure Update Manager または Update Compliance で確認する。計画メンテナンスウィンドウを設定し、適用対象を段階的に処理する。完了後、Defender 推奨事項の Unhealthy 件数を再確認する。</p>
+          <div>
+            <dt>推奨対応</dt>
+            <dd>Azure Update Manager 等でパッチ適用状況を確認し、対象 VM のリストアップと更新計画を策定する。適用できない場合はリスク受容を文書化する</dd>
           </div>
-        </div>
+        </dl>
       </div>
 
       <div class="risk-card">
         <div class="risk-card-header">
-          <span class="rank">2</span>
-          <span class="risk-title">VM に対する Advisor Security 勧告（High Impact · 40 件）</span>
+          <span class="risk-num">2</span>
           <span class="badge badge-red">優先度：高</span>
+          <span class="risk-title">VM セキュリティ設定の改善（Advisor High / Security）</span>
         </div>
-        <div class="risk-card-body">
-          <div class="field">
-            <label>観察事実</label>
-            <p>Advisor が VM に対して Security カテゴリ・High Impact の勧告を 40 件検出している。Advisor High 全体（81 件）の約 49% を占める。</p>
+        <dl class="risk-grid">
+          <div>
+            <dt>観察事実</dt>
+            <dd>Advisor が Microsoft.Compute/virtualMachines に対して High Impact × Security カテゴリの推奨を 40 件検出</dd>
           </div>
-          <div class="field">
-            <label>影響</label>
-            <p>セキュリティ構成の不備が複数 VM に存在する可能性がある。具体的な設定不備は個別確認が必要だが、放置すれば攻撃対象領域が拡大する。</p>
+          <div>
+            <dt>影響</dt>
+            <dd>セキュリティ構成の不備が攻撃面を拡大させる可能性がある。Defender の指摘と合わせ VM への集中リスクが確認できる</dd>
           </div>
-          <div class="field" style="grid-column: 1 / -1;">
-            <label>推奨対応</label>
-            <p>Azure Advisor ポータルで Security カテゴリ・High Impact のフィルタを適用し、対象リソースと勧告内容を確認する。Defender for Cloud の推奨事項と照合して優先順位を決定する。</p>
+          <div>
+            <dt>推奨対応</dt>
+            <dd>Azure ポータルの Advisor 画面で対象推奨事項を確認し、セキュリティ設定の内容を精査したうえで対応を判断する</dd>
           </div>
-        </div>
+        </dl>
       </div>
 
       <div class="risk-card">
         <div class="risk-card-header">
-          <span class="rank">3</span>
-          <span class="risk-title">Defender 未対応推奨事項の高比率（Unhealthy 275 件 / 53%）</span>
+          <span class="risk-num">3</span>
           <span class="badge badge-red">優先度：高</span>
+          <span class="risk-title">Defender 不明カテゴリ（Unknown）の未分類推奨事項</span>
         </div>
-        <div class="risk-card-body">
-          <div class="field">
-            <label>観察事実</label>
-            <p>Defender 推奨事項 514 件のうち 275 件（約 53%）が Unhealthy（未対応）。High が 79 件・Medium が 169 件・Low が 27 件と幅広い重大度にわたる。</p>
+        <dl class="risk-grid">
+          <div>
+            <dt>観察事実</dt>
+            <dd>Defender 推奨カテゴリ「Unknown」が 76 件（High 重大度 11 件を含む）存在する</dd>
           </div>
-          <div class="field">
-            <label>影響</label>
-            <p>未対応推奨事項の蓄積は Secure Score の低下を招き、セキュリティ態勢の全体評価を悪化させる。High 以外の未対応項目も長期的なリスク要因となる。</p>
+          <div>
+            <dt>影響</dt>
+            <dd>分類不明のため対応優先度の判断ができない。実際の重大度・対象リソースを確認しないと見落としが生じる</dd>
           </div>
-          <div class="field" style="grid-column: 1 / -1;">
-            <label>推奨対応</label>
-            <p>High → Medium の順で対応方針を決定する。自動修復が可能な推奨事項については Azure Policy または Quick Fix を活用する。未対応理由が「承認済み例外」の場合は Exempt 設定を明示する。</p>
+          <div>
+            <dt>推奨対応</dt>
+            <dd>Defender for Cloud ポータルで「Unknown」カテゴリの推奨事項を個別確認し、対応要否を仕分けする</dd>
           </div>
-        </div>
+        </dl>
       </div>
 
       <div class="risk-card">
         <div class="risk-card-header">
-          <span class="rank">4</span>
-          <span class="risk-title">ディスクの高可用性に関する Advisor High 11 件</span>
+          <span class="risk-num">4</span>
           <span class="badge badge-amber">優先度：中</span>
+          <span class="risk-title">Owner ロールの過剰付与リスク</span>
         </div>
-        <div class="risk-card-body">
-          <div class="field">
-            <label>観察事実</label>
-            <p>Advisor が MICROSOFT.COMPUTE/DISKS に対して HighAvailability カテゴリ・High Impact の勧告を 11 件検出している。</p>
+        <dl class="risk-grid">
+          <div>
+            <dt>観察事実</dt>
+            <dd>ロール割り当て 43 件中 13 件（約 30%）が Owner。サブスクリプション 28 件・管理グループ 13 件にスコープが集中</dd>
           </div>
-          <div class="field">
-            <label>影響</label>
-            <p>冗長性や可用性ゾーン設定に課題がある可能性がある。ディスク障害時の復旧目標（RTO/RPO）を満たせないリスクがある。</p>
+          <div>
+            <dt>影響</dt>
+            <dd>Owner 権限は削除・ポリシー変更を含む最上位権限。漏洩・誤操作時の影響範囲が広範になる</dd>
           </div>
-          <div class="field" style="grid-column: 1 / -1;">
-            <label>推奨対応</label>
-            <p>Advisor で対象ディスクの勧告詳細を確認し、ゾーン冗長・スナップショット設定・バックアップポリシーの見直しを行う。ビジネスクリティカルな VM に紐付くディスクを優先する。</p>
+          <div>
+            <dt>推奨対応</dt>
+            <dd>各 Owner 割り当ての業務要件を確認し、最小権限（Contributor / カスタムロール）への置き換えが可能か検討する。時限アクセス（PIM）の活用も検討する</dd>
           </div>
-        </div>
+        </dl>
       </div>
 
       <div class="risk-card">
         <div class="risk-card-header">
-          <span class="rank">5</span>
-          <span class="risk-title">Owner ロール割り当て 13 件の特権境界確認</span>
+          <span class="risk-num">5</span>
           <span class="badge badge-amber">優先度：中</span>
+          <span class="risk-title">ディスク高可用性・VM 運用改善（Advisor High / HighAvailability &amp; OperationalExcellence）</span>
         </div>
-        <div class="risk-card-body">
-          <div class="field">
-            <label>観察事実</label>
-            <p>ロール割り当て 43 件中 Owner が 13 件（約 30%）。割り当てスコープはサブスクリプション 28 件・管理グループ 13 件・リソースグループ 2 件に分布する。</p>
+        <dl class="risk-grid">
+          <div>
+            <dt>観察事実</dt>
+            <dd>Advisor が MICROSOFT.COMPUTE/DISKS に HighAvailability × High Impact 11 件、VIRTUALMACHINES に OperationalExcellence × High Impact 11 件を検出</dd>
           </div>
-          <div class="field">
-            <label>影響</label>
-            <p>過剰な Owner 権限が付与されている場合、侵害時の影響範囲が広くなる。管理グループスコープの権限は特に広範な影響を及ぼし得る。</p>
+          <div>
+            <dt>影響</dt>
+            <dd>可用性設定不備のディスクは障害時にデータ損失・サービス停止リスクがある。運用改善未対応 VM は安定運用の妨げになる可能性がある</dd>
           </div>
-          <div class="field" style="grid-column: 1 / -1;">
-            <label>推奨対応</label>
-            <p>Owner 割り当ての正当性を定期レビュー（四半期）サイクルに組み込む。不要な Owner は Contributor または役割特化型ロールに降格する。PIM（Privileged Identity Management）の導入を検討する。</p>
+          <div>
+            <dt>推奨対応</dt>
+            <dd>Advisor の対象推奨事項を確認し、ディスクの冗長化設定（ZRS / 可用性セット）と VM 運用設定の改善計画を立案する</dd>
           </div>
-        </div>
+        </dl>
       </div>
 
     </div>
   </section>
 
   <!-- ===== 4. 30日アクションプラン ===== -->
-  <section class="section">
+  <section id="action-plan">
     <h2>4. 30日アクションプラン</h2>
-    <div class="timeline">
+    <div class="action-phases">
 
-      <div class="tl-phase">
-        <div class="tl-label">0〜7日：緊急対応</div>
-        <div class="action-table tbl-wrap">
-          <table>
-            <thead>
-              <tr><th>担当ロール</th><th>実施内容</th><th>完了条件</th><th>根拠指標</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Security</td>
-                <td>Defender for Cloud を開き、High 重大度 79 件の推奨事項一覧を確認・分類する</td>
-                <td>High 件数の一覧と担当チームへのアサイン完了</td>
-                <td>defenderHighSeverityTotal: 79</td>
-              </tr>
-              <tr>
-                <td>Cloud Ops</td>
-                <td>VM のソフトウェア更新状況を Azure Update Manager で棚卸しし、緊急パッチ対象を特定する</td>
-                <td>未適用パッチの VM リストと緊急度分類が完成</td>
-                <td>topRiskSamples: SoftwareUpdate High 65 件</td>
-              </tr>
-              <tr>
-                <td>IAM</td>
-                <td>Owner ロール割り当て 13 件のプリンシパルと目的を棚卸しする</td>
-                <td>Owner 割り当て一覧と正当性コメントが台帳に記録済み</td>
-                <td>ownerAssignmentTotal: 13</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="phase-card">
+        <div class="phase-header ph-1">第1フェーズ：0〜7日（緊急対応）</div>
+        <div class="phase-body">
+          <div class="action-item">
+            <div class="a-title">Defender High 推奨事項の優先リスト作成</div>
+            <p>Azure Defender for Cloud ポータルで重大度 High の 72 件を抽出し、SoftwareUpdate（推定 58 件）と Unknown（11 件）を分類・担当者にアサインする。</p>
+            <div class="a-meta">
+              <span>担当ロール：Security</span>
+              <span>完了条件：High 推奨事項全件に対応方針（対応・受容・除外）が記録される</span>
+              <span>根拠指標：defenderHighSeverityTotal=72、topRiskSamples[0]</span>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="a-title">VM パッチ適用状況の即時確認</div>
+            <p>Azure Update Manager で仮想マシンのパッチ適用状況を確認し、未適用 VM を特定する。緊急パッチが存在する VM は今週中に適用スケジュールを設定する。</p>
+            <div class="a-meta">
+              <span>担当ロール：Cloud Ops</span>
+              <span>完了条件：対象 VM の一覧と更新スケジュールが作成される</span>
+              <span>根拠指標：topRiskSamples[0]（SoftwareUpdate High × VM 58件）</span>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="a-title">Owner ロール割り当ての棚卸し開始</div>
+            <p>全 13 件の Owner 割り当てについて、割り当てスコープ（サブスクリプション・管理グループ）と割り当てプリンシパルの業務要件を確認する。</p>
+            <div class="a-meta">
+              <span>担当ロール：IAM / Governance</span>
+              <span>完了条件：Owner 割り当て一覧と業務要件の対応表が作成される</span>
+              <span>根拠指標：ownerAssignmentTotal=13</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="tl-phase">
-        <div class="tl-label">8〜14日：計画的是正</div>
-        <div class="action-table tbl-wrap">
-          <table>
-            <thead>
-              <tr><th>担当ロール</th><th>実施内容</th><th>完了条件</th><th>根拠指標</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Cloud Ops</td>
-                <td>緊急パッチ対象 VM にメンテナンスウィンドウを設定し、パッチ適用を実施する</td>
-                <td>計画対象 VM のパッチ適用完了・Defender 再スキャン実施</td>
-                <td>SoftwareUpdate High 65 件</td>
-              </tr>
-              <tr>
-                <td>Security</td>
-                <td>Advisor Security High 40 件（VM）の詳細を確認し、対応・例外の方針を決定する</td>
-                <td>各勧告に「対応予定」または「承認済み例外」が設定済み</td>
-                <td>advisorHighImpactTotal: 81 / topRiskSamples Security 40 件</td>
-              </tr>
-              <tr>
-                <td>IAM</td>
-                <td>不要な Owner 割り当てを削除または Contributor へ降格する</td>
-                <td>Owner 件数削減、または全件の正当性が承認済み</td>
-                <td>ownerAssignmentTotal: 13</td>
-              </tr>
-              <tr>
-                <td>Cloud Ops</td>
-                <td>ディスクの高可用性 Advisor High 11 件を確認し、スナップショット・ゾーン設定を見直す</td>
-                <td>対象ディスクの可用性設定が要件を満たしたことを確認</td>
-                <td>topRiskSamples: HighAvailability Disk 11 件</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="phase-card">
+        <div class="phase-header ph-2">第2フェーズ：8〜14日（優先是正）</div>
+        <div class="phase-body">
+          <div class="action-item">
+            <div class="a-title">Advisor Security High Impact 推奨事項の是正</div>
+            <p>Advisor の Security × High Impact 40 件（VM 対象）を確認し、セキュリティ設定の改善を実施する。Defender 指摘との重複を整理し、未対応項目を優先する。</p>
+            <div class="a-meta">
+              <span>担当ロール：Security / Cloud Ops</span>
+              <span>完了条件：40 件の対応状況が記録され、是正または受容判断が完了する</span>
+              <span>根拠指標：topRiskSamples[1]（Advisor High × Security × VM 40件）</span>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="a-title">Owner ロール最小権限化の実施</div>
+            <p>棚卸し結果をもとに、業務要件がない Owner 割り当てを Contributor またはカスタムロールに変更する。必要に応じて PIM（特権 ID 管理）への移行を検討する。</p>
+            <div class="a-meta">
+              <span>担当ロール：IAM</span>
+              <span>完了条件：不要な Owner 割り当てが削除または降格される</span>
+              <span>根拠指標：ownerAssignmentTotal=13、roleAssignmentsByScope</span>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="a-title">Defender Unknown カテゴリの詳細調査</div>
+            <p>Defender for Cloud で 76 件の Unknown カテゴリ推奨事項を個別確認し、対応要否を判断する。High 重大度 11 件を優先して調査する。</p>
+            <div class="a-meta">
+              <span>担当ロール：Security</span>
+              <span>完了条件：Unknown 76 件の分類と対応方針が確定する</span>
+              <span>根拠指標：defenderByCategory.Unknown=76</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="tl-phase">
-        <div class="tl-label">15〜30日：継続的改善</div>
-        <div class="action-table tbl-wrap">
-          <table>
-            <thead>
-              <tr><th>担当ロール</th><th>実施内容</th><th>完了条件</th><th>根拠指標</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Security</td>
-                <td>Defender Medium 169 件・Low 27 件を対象に、Quick Fix 自動修復の適用計画を策定する</td>
-                <td>Medium / Low 対応ロードマップが承認済み</td>
-                <td>defenderBySeverity Medium: 169, Low: 27</td>
-              </tr>
-              <tr>
-                <td>Governance</td>
-                <td>ロール割り当ての定期レビュー（四半期）プロセスを文書化し、Owner レビューサイクルを確立する</td>
-                <td>レビュー手順書と次回レビュー日程が確定済み</td>
-                <td>roleAssignmentTotal: 43 / ownerAssignmentTotal: 13</td>
-              </tr>
-              <tr>
-                <td>Security / Governance</td>
-                <td>Advisor OperationalExcellence 22 件・HighAvailability 残件を順次対応する</td>
-                <td>各勧告に対応状況（完了・例外・保留）が記録済み</td>
-                <td>advisorByCategory OperationalExcellence: 22, HighAvailability: 52</td>
-              </tr>
-              <tr>
-                <td>Cloud Ops</td>
-                <td>更新管理の自動化（Update Manager ポリシー）を設定し、継続的なパッチ適用体制を確立する</td>
-                <td>全 VM に Update Manager ポリシーが適用済みであることを確認</td>
-                <td>SoftwareUpdate + SystemUpdate 合計 199 件（Defender）</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="phase-card">
+        <div class="phase-header ph-3">第3フェーズ：15〜30日（継続改善）</div>
+        <div class="phase-body">
+          <div class="action-item">
+            <div class="a-title">ディスク・VM 高可用性設定の改善</div>
+            <p>Advisor の HighAvailability（ディスク 11 件）と OperationalExcellence（VM 11 件）の推奨事項に従い、冗長化設定や運用改善を実施する。</p>
+            <div class="a-meta">
+              <span>担当ロール：Cloud Ops</span>
+              <span>完了条件：対象ディスク・VM の設定変更が完了し、Advisor 推奨事項が解消される</span>
+              <span>根拠指標：topRiskSamples[2][3]</span>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="a-title">VM 定期パッチ適用プロセスの整備</div>
+            <p>Update Manager を使用した定期パッチ適用スケジュールを設定し、継続的な更新管理体制を確立する。</p>
+            <div class="a-meta">
+              <span>担当ロール：Cloud Ops / Governance</span>
+              <span>完了条件：パッチ適用ポリシーとスケジュールが設定される</span>
+              <span>根拠指標：defenderBySeverity.High=72、SoftwareUpdate=92</span>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="a-title">Defender・Advisor 残存推奨事項のレビューと次回棚卸し計画</div>
+            <p>Medium・Low 推奨事項の対応優先度を整理し、次回棚卸しサイクルのスコープと頻度を決定する。</p>
+            <div class="a-meta">
+              <span>担当ロール：Governance / Security</span>
+              <span>完了条件：残存推奨事項の対応ロードマップと次回棚卸し計画が策定される</span>
+              <span>根拠指標：defenderUnhealthyTotal=213、advisorRecommendationTotal=236</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -739,62 +680,61 @@ tbody td {
   </section>
 
   <!-- ===== 5. データ詳細 ===== -->
-  <section class="section">
+  <section id="data-detail">
     <h2>5. データ詳細</h2>
 
-    <h3 style="font-size:0.92rem;color:#1a2340;margin:0 0 10px;">5-1. Defender 推奨事項 — 重大度別</h3>
-    <div class="tbl-wrap" style="margin-bottom:24px;">
+    <h3>Defender 推奨事項：重大度別</h3>
+    <div class="tbl-wrap">
       <table>
         <thead><tr><th>重大度</th><th>件数</th><th>全体比</th></tr></thead>
         <tbody>
-          <tr><td><span class="badge badge-red">High</span></td><td>79</td><td>約 15%</td></tr>
-          <tr><td><span class="badge badge-amber">Medium</span></td><td>169</td><td>約 33%</td></tr>
-          <tr><td><span class="badge badge-green">Low</span></td><td>27</td><td>約 5%</td></tr>
-          <tr><td><span class="badge badge-grey">Unhealthy 合計</span></td><td>275</td><td>約 53%</td></tr>
-          <tr><td><span class="badge badge-grey">推奨事項総数</span></td><td>514</td><td>100%</td></tr>
+          <tr><td><span class="p-high">高（High）</span></td><td>72</td><td>33%</td></tr>
+          <tr><td><span class="p-medium">中（Medium）</span></td><td>115</td><td>54%</td></tr>
+          <tr><td><span class="p-low">低（Low）</span></td><td>26</td><td>12%</td></tr>
+          <tr><td><strong>合計（不健全）</strong></td><td>213</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h3 style="font-size:0.92rem;color:#1a2340;margin:0 0 10px;">5-2. Defender 推奨事項 — カテゴリ別</h3>
-    <div class="tbl-wrap" style="margin-bottom:24px;">
+    <h3>Defender 推奨事項：カテゴリ別</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>カテゴリ</th><th>件数</th><th>備考</th></tr></thead>
+        <tbody>
+          <tr><td>SoftwareUpdate</td><td>92</td><td>パッチ未適用が多数の可能性</td></tr>
+          <tr><td>Unknown</td><td>76</td><td>分類未確定、個別調査が必要</td></tr>
+          <tr><td>SystemUpdate</td><td>45</td><td>OS レベルの更新関連</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Advisor 推奨事項：影響度別</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>影響度</th><th>件数</th><th>全体比</th></tr></thead>
+        <tbody>
+          <tr><td><span class="p-high">高（High）</span></td><td>81</td><td>34%</td></tr>
+          <tr><td><span class="p-medium">中（Medium）</span></td><td>110</td><td>47%</td></tr>
+          <tr><td><span class="p-low">低（Low）</span></td><td>45</td><td>19%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Advisor 推奨事項：カテゴリ別</h3>
+    <div class="tbl-wrap">
       <table>
         <thead><tr><th>カテゴリ</th><th>件数</th></tr></thead>
         <tbody>
-          <tr><td>SoftwareUpdate</td><td>103</td></tr>
-          <tr><td>SystemUpdate</td><td>96</td></tr>
-          <tr><td>Unknown</td><td>76</td></tr>
+          <tr><td>Security</td><td>161</td></tr>
+          <tr><td>HighAvailability</td><td>52</td></tr>
+          <tr><td>OperationalExcellence</td><td>22</td></tr>
+          <tr><td>Cost</td><td>1</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h3 style="font-size:0.92rem;color:#1a2340;margin:0 0 10px;">5-3. Advisor 推奨事項 — Impact 別・カテゴリ別</h3>
-    <div class="two-col" style="margin-bottom:24px;">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Impact</th><th>件数</th></tr></thead>
-          <tbody>
-            <tr><td><span class="badge badge-red">High</span></td><td>81</td></tr>
-            <tr><td><span class="badge badge-amber">Medium</span></td><td>110</td></tr>
-            <tr><td><span class="badge badge-green">Low</span></td><td>45</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>カテゴリ</th><th>件数</th></tr></thead>
-          <tbody>
-            <tr><td>Security</td><td>161</td></tr>
-            <tr><td>HighAvailability</td><td>52</td></tr>
-            <tr><td>OperationalExcellence</td><td>22</td></tr>
-            <tr><td>Cost</td><td>1</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <h3 style="font-size:0.92rem;color:#1a2340;margin:0 0 10px;">5-4. ガバナンス — リソースタイプ別（上位10）</h3>
-    <div class="tbl-wrap" style="margin-bottom:24px;">
+    <h3>ガバナンス：リソースタイプ別</h3>
+    <div class="tbl-wrap">
       <table>
         <thead><tr><th>リソースタイプ</th><th>件数</th></tr></thead>
         <tbody>
@@ -812,67 +752,65 @@ tbody td {
       </table>
     </div>
 
-    <h3 style="font-size:0.92rem;color:#1a2340;margin:0 0 10px;">5-5. ガバナンス — ロール割り当てスコープ別・プリンシパルタイプ別</h3>
-    <div class="two-col" style="margin-bottom:24px;">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>スコープ</th><th>件数</th></tr></thead>
-          <tbody>
-            <tr><td>Subscription</td><td>28</td></tr>
-            <tr><td>ManagementGroup</td><td>13</td></tr>
-            <tr><td>ResourceGroup</td><td>2</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>プリンシパルタイプ</th><th>件数</th></tr></thead>
-          <tbody>
-            <tr><td>ServicePrincipal</td><td>39</td></tr>
-            <tr><td>User</td><td>4</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <h3 style="font-size:0.92rem;color:#1a2340;margin:0 0 10px;">5-6. Top Risk サンプル（根拠一覧）</h3>
+    <h3>ガバナンス：ロール割り当てスコープ別</h3>
     <div class="tbl-wrap">
       <table>
-        <thead>
-          <tr><th>リスク種別</th><th>重大度 / Impact</th><th>カテゴリ</th><th>リソースタイプ</th><th>件数</th></tr>
-        </thead>
+        <thead><tr><th>スコープ</th><th>件数</th></tr></thead>
+        <tbody>
+          <tr><td>Subscription</td><td>28</td></tr>
+          <tr><td>ManagementGroup</td><td>13</td></tr>
+          <tr><td>ResourceGroup</td><td>2</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>ガバナンス：プリンシパルタイプ別</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>プリンシパルタイプ</th><th>件数</th></tr></thead>
+        <tbody>
+          <tr><td>ServicePrincipal</td><td>39</td></tr>
+          <tr><td>User</td><td>4</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>根拠一覧（Top Risk Samples）</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>リスク種別</th><th>重大度/影響度</th><th>カテゴリ</th><th>リソースタイプ</th><th>件数</th></tr></thead>
         <tbody>
           <tr>
             <td>DefenderRecommendation</td>
-            <td><span class="badge badge-red">High</span></td>
+            <td><span class="p-high">High</span></td>
             <td>SoftwareUpdate</td>
             <td>Microsoft.Compute/virtualMachines</td>
-            <td>65</td>
+            <td>58</td>
           </tr>
           <tr>
             <td>AdvisorRecommendation</td>
-            <td><span class="badge badge-red">High</span></td>
+            <td><span class="p-high">High</span></td>
             <td>Security</td>
             <td>Microsoft.Compute/virtualMachines</td>
             <td>40</td>
           </tr>
           <tr>
             <td>AdvisorRecommendation</td>
-            <td><span class="badge badge-red">High</span></td>
+            <td><span class="p-high">High</span></td>
             <td>HighAvailability</td>
             <td>MICROSOFT.COMPUTE/DISKS</td>
             <td>11</td>
           </tr>
           <tr>
             <td>AdvisorRecommendation</td>
-            <td><span class="badge badge-red">High</span></td>
+            <td><span class="p-high">High</span></td>
             <td>OperationalExcellence</td>
             <td>MICROSOFT.COMPUTE/VIRTUALMACHINES</td>
             <td>11</td>
           </tr>
           <tr>
             <td>DefenderRecommendation</td>
-            <td><span class="badge badge-red">High</span></td>
+            <td><span class="p-high">High</span></td>
             <td>Unknown</td>
             <td>microsoft.compute/virtualmachines</td>
             <td>11</td>
@@ -883,31 +821,25 @@ tbody td {
   </section>
 
   <!-- ===== 6. 前提・制約 ===== -->
-  <section class="section">
+  <section id="assumptions">
     <h2>6. 前提・制約</h2>
-    <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px;font-size:0.87rem;">
-      <li style="padding:10px 14px;background:#f5f7fa;border-left:4px solid #1a2340;border-radius:0 4px 4px 0;">
-        本レポートは Azure 本番環境から取得したデータを匿名化・集約したものです。個別のリソース名、リソースグループ、サブスクリプション、テナント、プリンシパル名、ID、IP アドレスは含まれません。
-      </li>
-      <li style="padding:10px 14px;background:#f5f7fa;border-left:4px solid #1a2340;border-radius:0 4px 4px 0;">
-        集計値のみに基づくため、個別の推奨事項の妥当性・対応可否・適用除外の判断には、Azure ポータルまたは現地環境での追加確認が必要です。
-      </li>
-      <li style="padding:10px 14px;background:#f5f7fa;border-left:4px solid #1a2340;border-radius:0 4px 4px 0;">
-        本レポートは Agentic 分析フェーズ 2/3 の出力です。フェーズ 3 では追加データの分析や詳細推奨事項の提示が行われる場合があります。
-      </li>
-      <li style="padding:10px 14px;background:#f5f7fa;border-left:4px solid #1a2340;border-radius:0 4px 4px 0;">
-        「脆弱性が存在する」「侵害されている」など、集計データだけでは断定できない表現は意図的に避けています。観察事実、評価、推奨対応を区別して記述しています。
-      </li>
-      <li style="padding:10px 14px;background:#f5f7fa;border-left:4px solid #1a2340;border-radius:0 4px 4px 0;">
-        データ取得日時: 2026-07-22T22:16:20Z。取得後に環境が変更された場合、本レポートの内容と現状が乖離する可能性があります。
-      </li>
-    </ul>
+    <div class="summary-box">
+      <ul style="padding-left:18px; display:flex; flex-direction:column; gap:8px;">
+        <li>本レポートは Azure 本番環境から取得したデータを匿名化・集約したものです。個別リソース名、リソースグループ名、サブスクリプション ID、テナント ID、プリンシパル名、IP アドレスは一切含まれていません。</li>
+        <li>使用したデータは <code>/tmp/gh-aw/agent/inventory-summary.json</code> の集計値のみです。個別リソースへの直接アクセスは行っていません。</li>
+        <li>集計値のみでは個別推奨事項の妥当性や対応可否を確定できません。実環境での追加確認・調査が必要です。</li>
+        <li>「脆弱性が存在する」「侵害されている」などの断定的表現は使用していません。集計データから読み取れる観察事実と評価・推奨対応を区別して記述しています。</li>
+        <li>データ取得日時：2026年7月23日 22:14 UTC（<code>generatedAt</code> フィールドより）。この時点以降に発生した変更は本レポートに反映されていません。</li>
+        <li>スキーマバージョン：1.0</li>
+      </ul>
+    </div>
   </section>
 
-  <div class="page-footer">
-    Azure 棚卸しレポート — 自動生成 · 2026-07-22 22:18 UTC · 匿名化・集計済みデータ使用
+  <div class="report-footer">
+    Azure 棚卸し インサイトレポート — Agentic フェーズ 2/3 — 生成: 2026-07-23T22:16 UTC<br>
+    本レポートは匿名化集計データに基づく参考情報です。個別判断には実環境での確認が必要です。
   </div>
-</div>
 
+</div>
 </body>
 </html>
