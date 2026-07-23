@@ -58,6 +58,15 @@ jobs:
           tar -xf downloaded-pages/artifact.tar -C _site
           test -f _site/index.html
 
+      - name: リポジトリリンクを追加
+        shell: pwsh
+        env:
+          REPOSITORY_URL: ${{ github.server_url }}/${{ github.repository }}
+        run: |
+          ./scripts/Add-RepositoryLinkToHtml.ps1 `
+            -HtmlPath '_site/index.html' `
+            -RepositoryUrl $env:REPOSITORY_URL
+
       - name: レポートを latest/history に保存
         shell: pwsh
         env:
