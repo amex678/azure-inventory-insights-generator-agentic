@@ -15,6 +15,14 @@ if ([string]::IsNullOrWhiteSpace($html)) {
     throw 'Agent report is empty.'
 }
 
+function ConvertFrom-HtmlFragment {
+    param([string]$Fragment)
+
+    $withoutTags = [regex]::Replace($Fragment, '<[^>]+>', ' ')
+    $decoded = [System.Net.WebUtility]::HtmlDecode($withoutTags)
+    return ([regex]::Replace($decoded, '\s+', ' ')).Trim()
+}
+
 $requiredSections = [ordered]@{
     ExecutiveSummary = 'エグゼクティブ\s*サマリ(?:ー)?'
     OverallSummary = '全体\s*サマリ(?:ー)?\s*表'
@@ -46,8 +54,38 @@ if (-not $firstSecondaryHeading.Success -or $firstSecondaryHeading.Groups['text'
     throw 'Executive Summary must be the first H2 section.'
 }
 
+$executiveSection = $html.Substring(
+    $positions.ExecutiveSummary,
+    $positions.OverallSummary - $positions.ExecutiveSummary
+)
+$concernsMatch = [regex]::Match(
+    $executiveSection,
+    '主要\s*懸念\s*事項',
+    [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
+)
+$assessmentScope = if ($concernsMatch.Success) {
+    $executiveSection.Substring(0, $concernsMatch.Index)
+}
+else {
+    $executiveSection
+}
+$assessmentParagraphs = [regex]::Matches(
+    $assessmentScope,
+    '<p\b[^>]*>(?<text>.*?)</p>',
+    [System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::Singleline
+)
+$hasSubstantiveAssessment = $false
+foreach ($paragraph in $assessmentParagraphs) {
+    if ((ConvertFrom-HtmlFragment $paragraph.Groups['text'].Value).Length -ge 120) {
+        $hasSubstantiveAssessment = $true
+        break
+    }
+}
+if (-not $hasSubstantiveAssessment) {
+    throw 'Required report content missing: OverallAssessment'
+}
+
 $requiredNarrativePatterns = [ordered]@{
-    OverallAssessment = '総評'
     Concerns = '主要\s*懸念\s*事項'
     Strengths = '強み(?:\s*[・･]\s*確認できた統制)?'
     FirstWeek = '0\s*[〜～-]\s*7\s*日'
