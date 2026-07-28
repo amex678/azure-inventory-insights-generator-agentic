@@ -13,6 +13,7 @@ $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $validationScript = Join-Path $repositoryRoot 'scripts\Test-AzAgentReport.ps1'
 $testDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "az-agent-report-test-$([guid]::NewGuid().ToString('N'))"
 $validReport = Join-Path $testDirectory 'valid.html'
+$validDivReport = Join-Path $testDirectory 'valid-div.html'
 $validUnlabeledReport = Join-Path $testDirectory 'valid-unlabeled.html'
 $missingAssessmentReport = Join-Path $testDirectory 'missing-assessment.html'
 $invalidReport = Join-Path $testDirectory 'invalid.html'
@@ -29,6 +30,7 @@ $validHtml = @'
 </body></html>
 '@
 
+$validDivHtml = $validHtml -replace '<h3>総評</h3><p>(.*?)</p>', '<div class="summary-text"><strong>総評：</strong>$1</div>'
 $validUnlabeledHtml = $validHtml -replace '<h3>総評</h3>', ''
 $missingAssessmentHtml = $validHtml -replace '<h3>総評</h3><p>.*?</p>', ''
 
@@ -45,11 +47,13 @@ $invalidHtml = @'
 try {
     New-Item -ItemType Directory -Path $testDirectory -Force | Out-Null
     $validHtml | Set-Content -LiteralPath $validReport -Encoding UTF8
+    $validDivHtml | Set-Content -LiteralPath $validDivReport -Encoding UTF8
     $validUnlabeledHtml | Set-Content -LiteralPath $validUnlabeledReport -Encoding UTF8
     $missingAssessmentHtml | Set-Content -LiteralPath $missingAssessmentReport -Encoding UTF8
     $invalidHtml | Set-Content -LiteralPath $invalidReport -Encoding UTF8
 
     & $validationScript -HtmlPath $validReport
+    & $validationScript -HtmlPath $validDivReport
     & $validationScript -HtmlPath $validUnlabeledReport
 
     $missingAssessmentRejected = $false

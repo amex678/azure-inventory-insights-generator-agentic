@@ -69,19 +69,26 @@ $assessmentScope = if ($concernsMatch.Success) {
 else {
     $executiveSection
 }
-$assessmentParagraphs = [regex]::Matches(
-    $assessmentScope,
-    '<p\b[^>]*>(?<text>.*?)</p>',
-    [System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::Singleline
+$assessmentText = ConvertFrom-HtmlFragment $assessmentScope
+$assessmentLabel = [regex]::Match(
+    $assessmentText,
+    '総\s*評\s*[：:]?',
+    [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
 )
-$hasSubstantiveAssessment = $false
-foreach ($paragraph in $assessmentParagraphs) {
-    if ((ConvertFrom-HtmlFragment $paragraph.Groups['text'].Value).Length -ge 120) {
-        $hasSubstantiveAssessment = $true
-        break
-    }
+if ($assessmentLabel.Success) {
+    $assessmentText = $assessmentText.Substring($assessmentLabel.Index + $assessmentLabel.Length).Trim()
 }
-if (-not $hasSubstantiveAssessment) {
+else {
+    $assessmentParagraphs = [regex]::Matches(
+        $assessmentScope,
+        '<p\b[^>]*>(?<text>.*?)</p>',
+        [System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::Singleline
+    )
+    $assessmentText = ($assessmentParagraphs | ForEach-Object {
+        ConvertFrom-HtmlFragment $_.Groups['text'].Value
+    }) -join ' '
+}
+if ($assessmentText.Trim().Length -lt 120) {
     throw 'Required report content missing: OverallAssessment'
 }
 
