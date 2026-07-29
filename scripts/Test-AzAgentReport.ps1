@@ -69,14 +69,15 @@ $assessmentScope = if ($concernsMatch.Success) {
 else {
     $executiveSection
 }
-$assessmentText = ConvertFrom-HtmlFragment $assessmentScope
-$assessmentLabel = [regex]::Match(
-    $assessmentText,
-    '総\s*評\s*[：:]?',
+$assessmentMarker = [regex]::Match(
+    $assessmentScope,
+    '<!--\s*総\s*評\s*-->|総\s*評\s*[：:]?',
     [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
 )
-if ($assessmentLabel.Success) {
-    $assessmentText = $assessmentText.Substring($assessmentLabel.Index + $assessmentLabel.Length).Trim()
+if ($assessmentMarker.Success) {
+    $assessmentText = ConvertFrom-HtmlFragment $assessmentScope.Substring(
+        $assessmentMarker.Index + $assessmentMarker.Length
+    )
 }
 else {
     $assessmentParagraphs = [regex]::Matches(
