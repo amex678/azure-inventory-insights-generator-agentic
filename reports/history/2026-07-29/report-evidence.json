@@ -1,9 +1,9 @@
 {
   "generation_method": "agentic-workflow",
   "repository": "amex678/azure-inventory-insights-generator-agentic",
-  "sourceRunId": "30416905683",
-  "sourceRunUrl": "https://github.com/amex678/azure-inventory-insights-generator-agentic/actions/runs/30416905683",
-  "sourceHeadSha": "db4f3be6424d9c00b968c9887607c84a2baba684",
-  "publishRunId": "30417213626",
-  "generatedAt": "2026-07-29T02:35:04.1229271+00:00"
+  "sourceRunId": "30495263607",
+  "sourceRunUrl": "https://github.com/amex678/azure-inventory-insights-generator-agentic/actions/runs/30495263607",
+  "sourceHeadSha": "5d2f59656652bddd5d6dea618206951f9bfe3888",
+  "publishRunId": "30495729205",
+  "generatedAt": "2026-07-29T22:19:51.7089360+00:00"
 }
