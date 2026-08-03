@@ -88,9 +88,22 @@ else {
     $assessmentText = ($assessmentParagraphs | ForEach-Object {
         ConvertFrom-HtmlFragment $_.Groups['text'].Value
     }) -join ' '
+
+    $assessmentBlocks = [regex]::Matches(
+        $assessmentScope,
+        '<(?<tag>p|div|article|aside|blockquote)\b[^>]*>(?<text>.*?)</\k<tag>\s*>',
+        [System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::Singleline
+    )
+    foreach ($assessmentBlock in $assessmentBlocks) {
+        $blockText = ConvertFrom-HtmlFragment $assessmentBlock.Groups['text'].Value
+        if ($blockText.Length -gt $assessmentText.Length) {
+            $assessmentText = $blockText
+        }
+    }
 }
-if ($assessmentText.Trim().Length -lt 120) {
-    throw 'Required report content missing: OverallAssessment'
+$assessmentLength = $assessmentText.Trim().Length
+if ($assessmentLength -lt 120) {
+    throw "Required report content missing: OverallAssessment (detected $assessmentLength characters; minimum 120)"
 }
 
 $requiredNarrativePatterns = [ordered]@{

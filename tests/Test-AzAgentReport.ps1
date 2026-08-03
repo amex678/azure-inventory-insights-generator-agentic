@@ -15,6 +15,7 @@ $testDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "az-agent-report-te
 $validReport = Join-Path $testDirectory 'valid.html'
 $validDivReport = Join-Path $testDirectory 'valid-div.html'
 $validCommentedDivReport = Join-Path $testDirectory 'valid-commented-div.html'
+$validUnlabeledDivReport = Join-Path $testDirectory 'valid-unlabeled-div.html'
 $validUnlabeledReport = Join-Path $testDirectory 'valid-unlabeled.html'
 $missingAssessmentReport = Join-Path $testDirectory 'missing-assessment.html'
 $invalidReport = Join-Path $testDirectory 'invalid.html'
@@ -33,6 +34,7 @@ $validHtml = @'
 
 $validDivHtml = $validHtml -replace '<h3>総評</h3><p>(.*?)</p>', '<div class="summary-text"><strong>総評：</strong>$1</div>'
 $validCommentedDivHtml = $validHtml -replace '<h3>総評</h3><p>(.*?)</p>', '<!-- 総評 --><div class="exec-summary-text">$1</div>'
+$validUnlabeledDivHtml = $validHtml -replace '<h3>総評</h3><p>(.*?)</p>', '<div class="summary-box">$1</div>'
 $validUnlabeledHtml = $validHtml -replace '<h3>総評</h3>', ''
 $missingAssessmentHtml = $validHtml -replace '<h3>総評</h3><p>.*?</p>', ''
 
@@ -51,6 +53,7 @@ try {
     $validHtml | Set-Content -LiteralPath $validReport -Encoding UTF8
     $validDivHtml | Set-Content -LiteralPath $validDivReport -Encoding UTF8
     $validCommentedDivHtml | Set-Content -LiteralPath $validCommentedDivReport -Encoding UTF8
+    $validUnlabeledDivHtml | Set-Content -LiteralPath $validUnlabeledDivReport -Encoding UTF8
     $validUnlabeledHtml | Set-Content -LiteralPath $validUnlabeledReport -Encoding UTF8
     $missingAssessmentHtml | Set-Content -LiteralPath $missingAssessmentReport -Encoding UTF8
     $invalidHtml | Set-Content -LiteralPath $invalidReport -Encoding UTF8
@@ -58,6 +61,7 @@ try {
     & $validationScript -HtmlPath $validReport
     & $validationScript -HtmlPath $validDivReport
     & $validationScript -HtmlPath $validCommentedDivReport
+    & $validationScript -HtmlPath $validUnlabeledDivReport
     & $validationScript -HtmlPath $validUnlabeledReport
 
     $missingAssessmentRejected = $false
