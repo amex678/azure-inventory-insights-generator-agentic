@@ -32,13 +32,20 @@ $requiredSections = [ordered]@{
     Assumptions = '前提\s*[・･]\s*制約'
 }
 
+$secondaryHeadings = [regex]::Matches(
+    $html,
+    '<h2\b[^>]*>(?<text>.*?)</h2>',
+    [System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::Singleline
+)
 $positions = [ordered]@{}
 foreach ($section in $requiredSections.GetEnumerator()) {
-    $match = [regex]::Match($html, $section.Value, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
-    if (-not $match.Success) {
+    $headingMatch = $secondaryHeadings | Where-Object {
+        (ConvertFrom-HtmlFragment $_.Groups['text'].Value) -match $section.Value
+    } | Select-Object -First 1
+    if ($null -eq $headingMatch) {
         throw "Required section missing: $($section.Key)"
     }
-    $positions[$section.Key] = $match.Index
+    $positions[$section.Key] = $headingMatch.Index
 }
 
 $previousPosition = -1
@@ -49,8 +56,8 @@ foreach ($sectionName in $requiredSections.Keys) {
     $previousPosition = $positions[$sectionName]
 }
 
-$firstSecondaryHeading = [regex]::Match($html, '<h2\b[^>]*>(?<text>.*?)</h2>', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [System.Text.RegularExpressions.RegexOptions]::Singleline)
-if (-not $firstSecondaryHeading.Success -or $firstSecondaryHeading.Groups['text'].Value -notmatch $requiredSections.ExecutiveSummary) {
+$firstSecondaryHeading = $secondaryHeadings | Select-Object -First 1
+if ($null -eq $firstSecondaryHeading -or $firstSecondaryHeading.Groups['text'].Value -notmatch $requiredSections.ExecutiveSummary) {
     throw 'Executive Summary must be the first H2 section.'
 }
 
