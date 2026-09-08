@@ -16,6 +16,8 @@ permissions:
   actions: read
   copilot-requests: write
 
+model: claude-sonnet-5
+
 engine:
   id: copilot
   bare: true
